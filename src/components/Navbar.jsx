@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './Navbar.css';
 
-export default function Navbar() {
+export default function Navbar({ currentLang, setCurrentLang }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  
-  // Добавляем локальный стейт для языка, чтобы кнопки не падали с ошибкой
-  const [currentLang, setLang] = useState('pl');
 
-  // Блокировка прокрутки страницы при открытом мобильном меню
   useEffect(() => {
     if (isMenuOpen) {
       document.body.style.overflow = 'hidden';
@@ -43,7 +39,7 @@ export default function Navbar() {
             {currentLang === 'pl' ? 'Jak zamówić' : 'How to order'}
           </a>
           <a href="#o-mnie" className="nav-link">
-            {currentLang === 'pl' ? 'O mnie' : 'About me'}
+            {currentLang === 'pl' ? 'O sztuce' : 'About'}
           </a>
         </nav>
 
@@ -67,14 +63,14 @@ export default function Navbar() {
           <div className="lang-switcher">
             <button 
               className={`lang-btn ${currentLang === 'pl' ? 'active' : ''}`}
-              onClick={() => setLang('pl')}
+              onClick={() => setCurrentLang('pl')}
             >
               PL
             </button>
             <span className="lang-divider">|</span>
             <button 
               className={`lang-btn ${currentLang === 'en' ? 'active' : ''}`}
-              onClick={() => setLang('en')}
+              onClick={() => setCurrentLang('en')}
             >
               EN
             </button>
@@ -104,7 +100,7 @@ export default function Navbar() {
             {currentLang === 'pl' ? 'Jak zamówić' : 'How to order'}
           </a>
           <a href="#o-mnie" className="mobile-link" onClick={closeMenu}>
-            {currentLang === 'pl' ? 'O mnie' : 'About me'}
+            {currentLang === 'pl' ? 'O sztuce' : 'About'}
           </a>
         </nav>
       </div>

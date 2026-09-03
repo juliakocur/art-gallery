@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Navbar from './components/Navbar';
+import Hero from './components/Hero';
 
 export default function App() {
+  const [currentLang, setCurrentLang] = useState('pl');
+
   return (
     <div className="app">
-      <Navbar />
+      <Navbar currentLang={currentLang} setCurrentLang={setCurrentLang} />
+      <Hero currentLang={currentLang} />
+      
       <main>
-        <h1 style={{ textAlign: 'center', marginTop: '100px' }}>
-          Добро пожаловать в мою галерею!
-        </h1>
       </main>
     </div>
   );
