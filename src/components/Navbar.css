@@ -1,86 +1,237 @@
-/* Основной контейнер шапки */
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 40px;
-    background-color: #ffffff;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+/* Общие стили шапки */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #23201E; /* Графитово-коричневый */
+  color: #F4F1EA; /* Молочно-песочный */
+  z-index: 1000;
+  border-bottom: 1px solid rgba(244, 241, 234, 0.1);
+}
+
+.header-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Логотип */
+.logo {
+  text-decoration: none;
+  color: #F4F1EA;
+  display: flex;
+  flex-direction: column;
+}
+
+.logo-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  letter-spacing: 2px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.logo-subtitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 8.5px;
+  letter-spacing: 5.8px; /* Фирменное значение по запросу */
+  color: #C5A880; /* Благородный теплый золотистый оттенок */
+  text-transform: uppercase;
+  margin-top: 3px;
+  white-space: nowrap;
+}
+
+/* Десктопное меню */
+.nav-desktop {
+  display: flex;
+  gap: 40px;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #F4F1EA;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+/* Золотое подчеркивание при наведении */
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background-color: #C5A880;
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* Правая часть (Иконка соцсети, Язык, Бургер) */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.social-icon {
+  color: #F4F1EA;
+  opacity: 0.8;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+}
+
+.social-icon:hover {
+  opacity: 1;
+  color: #C5A880;
+}
+
+.lang-switcher {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+.lang-btn {
+  background: none;
+  border: none;
+  color: #B8B2A9;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+  font-size: inherit;
+  transition: all 0.3s ease;
+}
+
+.lang-btn.active, .lang-btn:hover {
+  color: #C5A880;
+}
+
+.lang-divider {
+  color: #B8B2A9;
+  font-weight: 300;
+}
+
+/* Бургер-кнопка (3 линии) */
+.burger-btn {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 28px;
+  height: 16px;
+  position: relative;
+  padding: 0;
+  z-index: 1001;
+}
+
+.burger-btn span {
+  display: block;
+  width: 100%;
+  height: 1.5px;
+  background-color: #F4F1EA;
+  position: absolute;
+  left: 0;
+  transition: all 0.3s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+.burger-btn span:nth-child(1) {
+  top: 0;
+}
+
+.burger-btn span:nth-child(2) {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.burger-btn span:nth-child(3) {
+  bottom: 0;
+}
+
+/* Мобильное меню (Матово-стеклянная шторка, 85% непрозрачности) */
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(35, 32, 30, 0.85); /* 85% прозрачности */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+  z-index: 999;
+}
+
+.mobile-menu.active {
+  right: 0;
+}
+
+.nav-mobile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+
+.mobile-link {
+  text-decoration: none;
+  color: #F4F1EA;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  letter-spacing: 2px;
+  transition: all 0.3s ease;
+}
+
+.mobile-link:hover {
+  color: #C5A880;
+}
+
+/* Анимация превращения 3 линий в идеальный крест */
+.burger-btn.active span:nth-child(1) {
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.burger-btn.active span:nth-child(2) {
+  opacity: 0;
+  transform: translateY(-50%) scale(0.2);
+}
+
+.burger-btn.active span:nth-child(3) {
+  bottom: 50%;
+  transform: translateY(50%) rotate(-45deg);
+}
+
+/* Адаптив для планшетов и мобильных устройств */
+@media (max-width: 968px) {
+  .header-container {
+    padding: 15px 20px;
   }
   
-  .navbar__logo h2 {
-    margin: 0;
-    font-size: 24px;
-    color: #2c3e50;
-    font-family: sans-serif;
-  }
-  
-  /* Ссылки меню для ПК */
-  .navbar__menu {
-    display: flex;
-    gap: 30px;
-  }
-  
-  .navbar__menu a {
-    text-decoration: none;
-    color: #333;
-    font-size: 16px;
-    font-weight: 500;
-    transition: color 0.3s;
-  }
-  
-  .navbar__menu a:hover {
-    color: #d35400; /* Цвет при наведении */
-  }
-  
-  /* Кнопка бургера (по умолчанию скрыта на ПК) */
-  .navbar__burger {
+  .nav-desktop {
     display: none;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 30px;
-    height: 21px;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    z-index: 10;
   }
-  
-  .navbar__burger span {
-    width: 100%;
-    height: 3px;
-    background-color: #333;
-    border-radius: 2px;
-    transition: all 0.3s ease;
+
+  .burger-btn {
+    display: flex;
   }
-  
-  /* МОБИЛЬНАЯ ВЕРСИЯ (экраны меньше 768px) */
-  @media (max-width: 768px) {
-    .navbar__burger {
-      display: flex; /* Показываем бургер на мобилках */
-    }
-  
-    .navbar__menu {
-      position: fixed;
-      top: 0;
-      right: -100%; /* Прячем меню за правый край экрана */
-      width: 70%;
-      height: 100vh;
-      background-color: #ffffff;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 40px;
-      box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
-      transition: right 0.3s ease-in-out; /* Плавный выезд */
-    }
-  
-    /* Когда бургер активен (isOpen === true), выезжает меню */
-    .navbar__menu.active {
-      right: 0;
-    }
-  }
+}
