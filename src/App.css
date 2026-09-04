@@ -1,0 +1,31 @@
+/* Глобальные стили всего сайта */
+html {
+    width: 100%;
+    overflow-x: clip; /* Современная и надежная альтернатива hidden */
+    margin: 0;
+    padding: 0;
+    background-color: #F7F5F0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    width: 100%;
+    overflow-x: clip;
+    margin: 0;
+    padding: 0;
+    background-color: #F7F5F0;
+    color: #2C2A29;
+    position: relative;
+  }
+  
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+  
+  .app {
+    width: 100%;
+    min-height: 100vh;
+    background-color: #F7F5F0;
+    overflow-x: clip;
+    position: relative;
+  }

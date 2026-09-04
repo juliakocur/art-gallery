@@ -1,0 +1,175 @@
+.collection-section {
+    width: 100%;
+    padding: 100px 0;
+    background-color: #F7F5F0;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), 
+                transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow-x: clip;
+  }
+  
+  .collection-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .collection-container {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+  
+  .collection-top {
+    text-align: center;
+    margin-bottom: 60px;
+    width: 100%;
+  }
+  
+  .section-header-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 20px;
+    gap: 30px;
+  }
+  
+  .section-header-line .line {
+    flex: 1;
+    height: 1px;
+    background-color: #C5A880;
+    opacity: 0.6;
+  }
+  
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(26px, 2.8vw, 36px);
+    font-weight: 400;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #C5A880; 
+    /* Убрали жесткий white-space: nowrap, чтобы на очень узких экранах заголовок не ломал сетку */
+    margin: 0;
+    max-width: 100%;
+  }
+  
+  .collection-subtitle-text {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+    color: #6E6863;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+  
+  .collection-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    width: 100%;
+  }
+  
+  .collection-card {
+    position: relative;
+    height: 480px;
+    overflow: hidden;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), 
+                transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  .collection-section.visible .collection-card {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .card-image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .card-bg-placeholder {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    max-width: 100%;
+  }
+  
+  .collection-card:hover .card-bg-placeholder {
+    transform: scale(1.05);
+  }
+  
+  .card-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 40px 30px;
+    background: linear-gradient(to top, rgba(35, 32, 30, 0.95) 0%, rgba(35, 32, 30, 0.65) 65%, transparent 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  
+  .card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    color: #F4F1EA;
+  }
+  
+  .card-desc {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 300;
+    line-height: 1.5;
+    color: #D6D0C5;
+    margin-bottom: 20px;
+  }
+  
+  .card-link {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #C5A880;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: gap 0.3s ease;
+  }
+  
+  .card-link:hover {
+    gap: 12px;
+  }
+  
+  @media (max-width: 968px) {
+    .collection-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    
+    .collection-card {
+      height: 400px;
+    }
+  
+    .collection-section {
+      padding: 60px 0;
+    }
+    
+    .collection-container {
+      padding: 0 20px;
+    }
+  }
