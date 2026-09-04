@@ -1,35 +1,58 @@
-/* Общие стили шапки */
+/* Общие стили */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scrollbar-gutter: stable;
+}
+
 .header {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  background-color: #23201E; /* Графитово-коричневый */
-  color: #F4F1EA; /* Молочно-песочный */
+  background-color: #23201E;
+  color: #F4F1EA;
   z-index: 1000;
   border-bottom: 1px solid rgba(244, 241, 234, 0.1);
 }
 
 .header-container {
+  width: 100%;
   max-width: 1400px;
   margin: 0 auto;
   padding: 20px 40px;
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
 }
 
 /* Логотип */
 .logo {
+  justify-self: start;
   text-decoration: none;
   color: #F4F1EA;
   display: flex;
   flex-direction: column;
+  width: max-content;
+  flex-shrink: 0;
+  outline: none;
+}
+
+.logo:focus,
+.logo:active,
+.logo:focus-visible {
+  outline: none;
+  border: none;
+  box-shadow: none;
 }
 
 .logo-title {
   font-family: 'Cormorant Garamond', serif;
+  display: block;
   font-size: 20px;
+  line-height: 1;
   letter-spacing: 2px;
   font-weight: 500;
   white-space: nowrap;
@@ -37,18 +60,45 @@
 
 .logo-subtitle {
   font-family: 'Inter', sans-serif;
-  font-size: 8.5px;
-  letter-spacing: 5.3px; /* Фирменное значение по запросу */
-  color: #C5A880; /* Благородный теплый золотистый оттенок */
+  font-size: 11px;
+  line-height: 1.2;
+  font-weight: 200;
+  letter-spacing: 2.5px;
+  color: #C5A880;
   text-transform: uppercase;
-  margin-top: 3px;
+  display: block;
+  width: max-content;
   white-space: nowrap;
 }
 
-/* Десктопное меню */
+/* Буквенная анимация */
+.logo-subtitle .char {
+  opacity: 0;
+  display: inline-block;
+  transform: translateY(4px);
+  margin-right: 1.1px;
+  margin-top: 2.5px;
+  animation: revealChar 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes revealChar {
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  100% {
+    opacity: 0.85;
+    transform: translateY(0);
+  }
+}
+
+/* Десктопная навигация */
 .nav-desktop {
+  justify-self: center;
   display: flex;
+  align-items: center;
   gap: 40px;
+  white-space: nowrap;
 }
 
 .nav-link {
@@ -59,10 +109,9 @@
   letter-spacing: 1.5px;
   text-transform: uppercase;
   position: relative;
-  transition: all 0.3s ease;
+  transition: color 0.3s ease;
 }
 
-/* Золотое подчеркивание при наведении */
 .nav-link::after {
   content: '';
   position: absolute;
@@ -71,26 +120,32 @@
   width: 0;
   height: 1px;
   background-color: #C5A880;
-  transition: all 0.3s ease;
+  transition: width 0.3s ease;
 }
 
 .nav-link:hover::after {
   width: 100%;
 }
 
-/* Правая часть (Иконка соцсети, Язык, Бургер) */
+/* Правая часть */
 .header-right {
+  justify-self: end;
   display: flex;
   align-items: center;
   gap: 25px;
+  min-height: 20px;
 }
 
+/* Instagram */
 .social-icon {
   color: #F4F1EA;
   opacity: 0.8;
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, opacity 0.3s ease;
   display: flex;
   align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
 }
 
 .social-icon:hover {
@@ -98,6 +153,7 @@
   color: #C5A880;
 }
 
+/* Переключатель языка */
 .lang-switcher {
   display: flex;
   align-items: center;
@@ -105,6 +161,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 12px;
   letter-spacing: 1px;
+  white-space: nowrap;
 }
 
 .lang-btn {
@@ -115,10 +172,12 @@
   padding: 0;
   font-family: inherit;
   font-size: inherit;
-  transition: all 0.3s ease;
+  line-height: 1;
+  transition: color 0.3s ease;
 }
 
-.lang-btn.active, .lang-btn:hover {
+.lang-btn.active,
+.lang-btn:hover {
   color: #C5A880;
 }
 
@@ -127,7 +186,7 @@
   font-weight: 300;
 }
 
-/* Бургер-кнопка (3 линии) */
+/* Бургер */
 .burger-btn {
   display: none;
   background: none;
@@ -163,21 +222,21 @@
   bottom: 0;
 }
 
-/* Мобильное меню (Матово-стеклянная шторка, 85% непрозрачности) */
+/* Мобильное меню */
 .mobile-menu {
   position: fixed;
   top: 0;
   right: -100%;
   width: 100%;
   height: 100vh;
-  background-color: rgba(35, 32, 30, 0.85); /* 85% прозрачности */
+  background-color: rgba(35, 32, 30, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  transition: 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+  transition: right 0.4s cubic-bezier(0.77, 0, 0.175, 1);
   z-index: 999;
 }
 
@@ -198,14 +257,14 @@
   font-family: 'Cormorant Garamond', serif;
   font-size: 28px;
   letter-spacing: 2px;
-  transition: all 0.3s ease;
+  transition: color 0.3s ease;
 }
 
 .mobile-link:hover {
   color: #C5A880;
 }
 
-/* Анимация превращения 3 линий в идеальный крест */
+/* Анимация бургер -> крест */
 .burger-btn.active span:nth-child(1) {
   top: 50%;
   transform: translateY(-50%) rotate(45deg);
@@ -221,17 +280,49 @@
   transform: translateY(50%) rotate(-45deg);
 }
 
-/* Адаптив для планшетов и мобильных устройств */
+/* Адаптив для планшетов */
 @media (max-width: 968px) {
   .header-container {
     padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
-  
+
   .nav-desktop {
     display: none;
   }
 
   .burger-btn {
     display: flex;
+  }
+
+  .logo-subtitle .char {
+    margin-right: 1px;
+  }
+}
+
+/* Адаптив для маленьких телефонов */
+@media (max-width: 480px) {
+  .header-container {
+    padding: 14px 16px;
+  }
+
+  .logo-title {
+    font-size: 18px;
+    letter-spacing: 1.8px;
+  }
+
+  .logo-subtitle {
+    font-size: 10px;
+    letter-spacing: 2.3px;
+  }
+
+  .logo-subtitle .char {
+    margin-right: 0.9px;
+  }
+
+  .header-right {
+    gap: 18px;
   }
 }
