@@ -17,6 +17,15 @@ html {
     color: #2C2A29;
     position: relative;
   }
+
+a, 
+button, 
+.collection-card, 
+[role="button"], 
+input[type="submit"], 
+input[type="button"] {
+  cursor: pointer;
+}
   
   *, *::before, *::after {
     box-sizing: border-box;
