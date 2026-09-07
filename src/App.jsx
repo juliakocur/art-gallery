@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Collection from './components/Collection';
+import Philosophy from './components/Philosophy';
 import './App.css';
 
 export default function App() {
@@ -12,7 +13,7 @@ export default function App() {
       <Navbar currentLang={currentLang} setCurrentLang={setCurrentLang} />
       <Hero currentLang={currentLang} />
       <Collection currentLang={currentLang} />
-      
+      <Philosophy currentLang={currentLang} />
       <main>
       </main>
     </div>

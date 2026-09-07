@@ -94,7 +94,10 @@ export default function Collection({ currentLang }) {
                     {currentLang === 'pl' ? item.descPl : item.descEn}
                   </p>
                   <a href="#kontakt" className="card-link">
-                    {currentLang === 'pl' ? item.linkTextPl : item.linkTextEn} →
+                    <span>{currentLang === 'pl' ? item.linkTextPl : item.linkTextEn}</span>
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M5 12H19M19 12L12 5M19 12L12 19" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
                   </a>
                 </div>
               </div>

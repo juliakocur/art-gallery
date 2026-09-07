@@ -136,23 +136,6 @@ html {
   min-height: 20px;
 }
 
-/* Instagram */
-.social-icon {
-  color: #F4F1EA;
-  opacity: 0.8;
-  transition: color 0.3s ease, opacity 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 18px;
-  height: 18px;
-}
-
-.social-icon:hover {
-  opacity: 1;
-  color: #C5A880;
-}
-
 /* Переключатель языка */
 .lang-switcher {
   display: flex;
