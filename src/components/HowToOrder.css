@@ -2,7 +2,7 @@
     width: 100%;
     background-color: #F8F5F0;
     color: #23201E;
-    padding: 100px 0;
+    padding: 100px 0 0 0;
     opacity: 0;
     transform: translateY(40px);
     transition: opacity 1s ease-out, transform 1s ease-out;
@@ -89,7 +89,6 @@
     letter-spacing: 1px;
     min-height: 48px;
     display: flex;
-    align-items: center;
     justify-content: center;
   }
   

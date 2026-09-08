@@ -5,6 +5,7 @@ import Collection from './components/Collection';
 import Philosophy from './components/Philosophy';
 import HowToOrder from './components/HowToOrder';
 import About from './components/About';
+import ContactForm from './components/ContactForm';
 import './App.css';
 
 export default function App() {
@@ -20,6 +21,7 @@ export default function App() {
         <Philosophy currentLang={currentLang} />
         <About currentLang={currentLang} />
         <HowToOrder currentLang={currentLang} />
+        <ContactForm currentLang={currentLang} />
       </main>
     </div>
   );
