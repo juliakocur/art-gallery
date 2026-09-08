@@ -4,7 +4,7 @@ import instagramIcon from '../assets/ig.svg';
 import tiktokIcon from '../assets/tik-tok.svg';
 import pinterestIcon from '../assets/pinterest.svg';
 
-export default function Footer({ currentLang }) {
+export default function Footer({ currentLang, openModal }) {
   const [isVisible, setIsVisible] = useState(false);
   const footerRef = useRef(null);
 
@@ -33,8 +33,8 @@ export default function Footer({ currentLang }) {
     >
       <div className="footer-container">
         
-                {/* Логотип */}
-                    <div href="#" className="logo" >
+        {/* Логотип */}
+        <div href="#" className="logo">
           <span className="logo-title">JULIA KOCUR</span>
 
           <span className="logo-subtitle">
@@ -42,9 +42,6 @@ export default function Footer({ currentLang }) {
               <span
                 key={index}
                 className="char"
-                // style={{
-                //   animationDelay: `${0.8 + index * 0.05}s`
-                // }}
               >
                 {char === " " ? "\u00A0" : char}
               </span>
@@ -55,13 +52,27 @@ export default function Footer({ currentLang }) {
         {/* По центру: копирайт, политика, регулямин с точками */}
         <div className="footer-center-content">
           <span className="footer-item">&copy; {new Date().getFullYear()} Julia Kocur</span>
+          
           <span className="footer-item">
-            <a href="#polityka">
+            <a 
+              href="#polityka" 
+              onClick={(e) => { 
+                e.preventDefault(); 
+                openModal('polityka'); 
+              }}
+            >
               {currentLang === 'pl' ? 'Polityka prywatności' : 'Privacy Policy'}
             </a>
           </span>
+
           <span className="footer-item">
-            <a href="#regulamin">
+            <a 
+              href="#regulamin" 
+              onClick={(e) => { 
+                e.preventDefault(); 
+                openModal('regulamin'); 
+              }}
+            >
               {currentLang === 'pl' ? 'Regulamin' : 'Terms & Conditions'}
             </a>
           </span>

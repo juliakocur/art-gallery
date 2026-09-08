@@ -119,7 +119,7 @@
   /* АДАПТИВ ДЛЯ ПЛАНШЕТОВ И МОБИЛЬНЫХ УСТРОЙСТВ */
   @media (max-width: 968px) {
     .how-to-order-section {
-      padding: 60px 0;
+      padding: 60px 0 0 0;
     }
   
     .how-to-order-container {

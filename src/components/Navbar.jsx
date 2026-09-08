@@ -53,12 +53,12 @@ export default function Navbar({ currentLang, setCurrentLang }) {
             {currentLang === 'pl' ? 'Kolekcja' : 'Collection'}
           </a>
 
-          <a href="#jak-zamowic" className="nav-link">
-            {currentLang === 'pl' ? 'Jak zamówić' : 'How to order'}
-          </a>
-
           <a href="#o-sztuce" className="nav-link">
             {currentLang === 'pl' ? 'O sztuce' : 'About'}
+          </a>
+
+          <a href="#jak-zamowic" className="nav-link">
+            {currentLang === 'pl' ? 'Jak zamówić' : 'How to order'}
           </a>
         </nav>
 

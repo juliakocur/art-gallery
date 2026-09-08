@@ -16,9 +16,10 @@ export default function ContactForm({ currentLang }) {
   const [instagram, setInstagram] = useState('');
   const [message, setMessage] = useState('');
 
-  // Состояния для ошибок валидации и показа попапа
+  // Состояния для ошибок валидации, показа и плавной анимации закрытия попапа
   const [errors, setErrors] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
 
   // Обновляем доступные размеры при смене категории
   useEffect(() => {
@@ -50,16 +51,26 @@ export default function ContactForm({ currentLang }) {
     return () => observer.disconnect();
   }, []);
 
-  // Блокируем скролл страницы, когда открыт попап
+  // Жесткая блокировка скролла страницы с сохранением текущей позиции
   useEffect(() => {
     if (isModalOpen) {
+      const scrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.left = '0';
+      document.body.style.right = '0';
       document.body.style.overflow = 'hidden';
     } else {
+      const scrollY = document.body.style.top;
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
       document.body.style.overflow = '';
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || '0', 10) * -1);
+      }
     }
-    return () => {
-      document.body.style.overflow = '';
-    };
   }, [isModalOpen]);
 
   // Списки размеров для каждого типа
@@ -108,6 +119,7 @@ export default function ContactForm({ currentLang }) {
 
     // Если ошибок нет — открываем попап и очищаем форму
     if (Object.keys(newErrors).length === 0) {
+      setIsClosing(false);
       setIsModalOpen(true);
       setWorkName('');
       setName('');
@@ -117,14 +129,19 @@ export default function ContactForm({ currentLang }) {
     }
   };
 
+  // Плавное закрытие с задержкой под анимацию (350мс)
   const closeModal = () => {
-    setIsModalOpen(false);
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsModalOpen(false);
+      setIsClosing(false);
+    }, 350);
   };
 
-  // Модалка через Portal — рендерится в document.body
+  // Модалка через Portal с плавной анимацией открытия и закрытия
   const modal = isModalOpen
     ? createPortal(
-        <div className="modal-overlay active" onClick={closeModal}>
+        <div className={`modal-overlay ${isClosing ? 'closing' : 'active'}`} onClick={closeModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <h3 className="modal-title">
               {currentLang === 'pl' ? 'Dziękujemy!' : 'Thank You!'}
@@ -184,7 +201,7 @@ export default function ContactForm({ currentLang }) {
               <input
                 type="text"
                 className={`form-input ${errors.workName ? 'error' : ''}`}
-                placeholder={currentLang === 'pl' ? 'np. Zegar Granat' : 'e.g. Clock Blue'}
+                placeholder={currentLang === 'pl' ? 'np. Zegar Granaty' : 'e.g. Clock Pomegranates'}
                 value={workName}
                 onChange={(e) => {
                   setWorkName(e.target.value);
