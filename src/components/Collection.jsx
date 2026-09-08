@@ -17,11 +17,11 @@ export default function Collection({ currentLang }) {
       id: 2,
       image: '/images/relief.jpg',
       titlePl: 'Obrazy',
-      titleEn: 'Artworks',
+      titleEn: 'Paintings',
       descPl: 'Obrazy reliefowe tworzone z pasją, grą światła i unikalną fakturą.',
-      descEn: 'Relief artworks created with passion, play of light, and unique texture.',
+      descEn: 'Relief paintings created with passion, play of light, and unique texture.',
       linkTextPl: 'Zobacz obrazy',
-      linkTextEn: 'View artworks'
+      linkTextEn: 'View paintings'
     },
     {
       id: 3,

@@ -57,7 +57,7 @@ export default function Navbar({ currentLang, setCurrentLang }) {
             {currentLang === 'pl' ? 'Jak zamówić' : 'How to order'}
           </a>
 
-          <a href="#o-mnie" className="nav-link">
+          <a href="#o-sztuce" className="nav-link">
             {currentLang === 'pl' ? 'O sztuce' : 'About'}
           </a>
         </nav>
@@ -134,7 +134,7 @@ export default function Navbar({ currentLang, setCurrentLang }) {
           </a>
 
           <a
-            href="#o-mnie"
+            href="#o-sztuce"
             className="mobile-link"
             onClick={closeMenu}
           >

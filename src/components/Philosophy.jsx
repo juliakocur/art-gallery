@@ -1,7 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import './Philosophy.css';
-
-// Импортируем иконки из папки assets (проверь путь, если папка называется иначе, например './assets/faktura.svg')
 import fakturaIcon from '../assets/faktura.svg';
 import rekaIcon from '../assets/reka.svg';
 import indywidualnoscIcon from '../assets/indywidualnosc.svg';

@@ -35,12 +35,13 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    margin-bottom: 20px;
-    gap: 30px;
+    margin-bottom: 50px;
+    gap: 20px;
   }
   
   .philosophy-header-line .line {
     flex: 1;
+    min-width: 30px; /* Гарантирует, что полоски не пропадут при переносе текста */
     height: 1px;
     background-color: #C5A880;
     opacity: 0.6;
@@ -48,13 +49,14 @@
   
   .philosophy-section-title {
     font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(24px, 2.6vw, 34px);
+    font-size: clamp(20px, 2.6vw, 34px);
     font-weight: 400;
     letter-spacing: 4px;
     text-transform: uppercase;
     color: #C5A880; 
-    white-space: nowrap;
+    white-space: nowrap; /* По умолчанию в одну строку на десктопе */
     margin: 0;
+    text-align: center;
   }
   
   .philosophy-subtitle {
@@ -79,8 +81,8 @@
   /* Карточка с вертикальной полосой слева по умолчанию */
   .philosophy-card {
     background-color: transparent;
-    padding: 10px 0 10px 25px; /* Отступ слева под вертикальную линию */
-    border-left: 1px solid rgba(197, 168, 128, 0.4); /* Вертикальная полоса */
+    padding: 10px 0 10px 25px;
+    border-left: 1px solid rgba(197, 168, 128, 0.4);
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -112,7 +114,7 @@
     color: #6E6863;
     margin: 0;
   }
-
+  
   .philosophy-icon-wrapper {
     margin-bottom: 16px;
     display: flex;
@@ -133,7 +135,19 @@
     }
   }
   
-  /* Адаптив: на телефонах в один столбец, а линии превращаются в горизонтальные сверху */
+  /* Адаптив: на экранах меньше 550px разрешаем перенос строк для заголовка */
+  @media (max-width: 550px) {
+    .philosophy-section-title {
+      white-space: normal; /* Разрешаем тексту переноситься */
+      line-height: 1.35;   /* Красивый интервал между строками */
+    }
+    
+    .philosophy-header-line {
+      gap: 15px; 
+    }
+  }
+  
+  /* Адаптив: на телефонах в один столбец, а линии в карточках горизонтальные */
   @media (max-width: 640px) {
     .philosophy-grid {
       grid-template-columns: 1fr;
@@ -141,9 +155,9 @@
     }
     
     .philosophy-card {
-      padding: 20px 0 0 0; /* Убираем левый отступ */
-      border-left: none;   /* Убираем вертикальную линию */
-      border-top: 1px solid rgba(197, 168, 128, 0.4); /* Делаем линию горизонтальной сверху */
+      padding: 20px 0 0 0;
+      border-left: none;
+      border-top: 1px solid rgba(197, 168, 128, 0.4);
     }
   
     .philosophy-container {
