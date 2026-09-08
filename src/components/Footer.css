@@ -1,0 +1,211 @@
+.site-footer {
+    width: 100%;
+    background-color: #23201E;
+    color: #F4F1EA;
+    padding: 50px 0;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  .site-footer.fade-in-active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .footer-container {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+  }
+  
+  /* Логотип: точная копия стилей из Navbar.css (без анимации) */
+/* Логотип */
+.logo {
+    justify-self: start;
+    text-decoration: none;
+    color: #F4F1EA;
+    display: flex;
+    flex-direction: column;
+    width: max-content;
+    flex-shrink: 0;
+    outline: none;
+  }
+  
+  .logo:focus,
+  .logo:active,
+  .logo:focus-visible {
+    outline: none;
+    border: none;
+    box-shadow: none;
+  }
+  
+  .logo-title {
+    font-family: 'Cormorant Garamond', serif;
+    display: block;
+    font-size: 20px;
+    line-height: 1;
+    letter-spacing: 2px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  
+  .logo-subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    line-height: 1.2;
+    font-weight: 200;
+    letter-spacing: 2.5px;
+    color: #C5A880;
+    text-transform: uppercase;
+    display: block;
+    width: max-content;
+    white-space: nowrap;
+  }
+  
+
+  .site-footer .logo {
+    justify-self: start;
+    text-decoration: none;
+    color: #F4F1EA;
+    display: flex;
+    flex-direction: column;
+    width: max-content;
+    flex-shrink: 0;
+    outline: none;
+  }
+  
+  .site-footer .logo-title {
+    font-family: 'Cormorant Garamond', serif;
+    display: block;
+    font-size: 20px;
+    line-height: 1;
+    letter-spacing: 2px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  
+  .site-footer .logo-subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    line-height: 1.2;
+    font-weight: 200;
+    letter-spacing: 2.5px;
+    color: #C5A880;
+    text-transform: uppercase;
+    display: block;
+    width: max-content;
+    white-space: nowrap;
+    margin-top: 0;
+  }
+  
+  /* Центральный блок: добавили падинги, чтобы не прилипал по бокам */
+  .footer-center-content {
+    justify-self: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: #B8B2A9;
+    text-align: center;
+    padding: 0 20px; /* Воздух по бокам */
+    box-sizing: border-box;
+  }
+  
+  .footer-center-content .footer-item {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap; /* Защита от преждевременного переноса слов */
+  }
+  
+  .footer-center-content .footer-item:not(:last-child):after {
+    content: "•";
+    margin: 0 10px;
+    color: #C5A880;
+    opacity: 0.7;
+  }
+  
+  .footer-center-content a {
+    color: #B8B2A9;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .footer-center-content a:hover {
+    color: #C5A880;
+  }
+  
+  /* Правая часть: иконки соцсетей */
+  .footer-social-icons {
+    justify-self: end;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+  
+  .footer-social-icons a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: rgba(244, 241, 234, 0.05);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  .footer-social-icons a img {
+    width: 16px;
+    height: 16px;
+    filter: brightness(0) invert(1);
+    opacity: 0.85;
+    transition: opacity 0.3s ease;
+  }
+  
+  .footer-social-icons a:hover {
+    background-color: #C5A880;
+    transform: translateY(-2px);
+  }
+  
+  .footer-social-icons a:hover img {
+    opacity: 1;
+  }
+  
+  /* Адаптив: при сужении экрана до 900px аккуратно переводим всё в вертикальный столбик и убираем точки */
+  @media (max-width: 900px) {
+    .footer-container {
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 25px;
+    }
+  
+    .site-footer .logo {
+      justify-self: center;
+    }
+  
+    .footer-center-content {
+      justify-self: center;
+      flex-direction: column;
+      gap: 8px;
+      padding: 0;
+    }
+  
+    /* Полностью убираем точки при переходе в столбик */
+    .footer-center-content .footer-item:not(:last-child):after {
+      content: none;
+      margin: 0;
+    }
+  
+    .footer-social-icons {
+      justify-self: center;
+    }
+  }

@@ -6,6 +6,7 @@ import Philosophy from './components/Philosophy';
 import HowToOrder from './components/HowToOrder';
 import About from './components/About';
 import ContactForm from './components/ContactForm';
+import Footer from './components/Footer';
 import './App.css';
 
 export default function App() {
@@ -23,6 +24,8 @@ export default function App() {
         <HowToOrder currentLang={currentLang} />
         <ContactForm currentLang={currentLang} />
       </main>
+      
+      <Footer currentLang={currentLang} />
     </div>
   );
 }
