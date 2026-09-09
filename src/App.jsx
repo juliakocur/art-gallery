@@ -11,19 +11,17 @@ import Footer from './components/Footer';
 import CookieBanner from './components/CookieBanner';
 import LegalModals from './components/LegalModals';
 import NotFound from './components/NotFound';
+import CollectionPage from './components/collection/CollectionPage';
+import ProductPage from './components/product/ProductPage';
 import './App.css';
 
 export default function App() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Определяем текущий язык на основе URL (по умолчанию 'pl', если в начале пути /en)
   const currentLang = location.pathname.startsWith('/en') ? 'en' : 'pl';
-
-  // Состояние для управления модалками юридических документов
   const [activeLegalModal, setActiveLegalModal] = useState(null);
 
-  // Функция переключения языка с синхронным изменением URL (с сохранением слешей и правильных категорий)
   const handleLangChange = (newLang) => {
     const currentPath = location.pathname;
     
@@ -56,10 +54,10 @@ export default function App() {
       
       <main className="main-content">
         <Routes>
-          {/* Редирект с корня сайта на /pl по умолчанию */}
+          {/* Редирект с корня на /pl */}
           <Route path="/" element={<Navigate to="/pl" replace />} />
 
-          {/* Главная страница для конкретного языка: /pl или /en */}
+          {/* Главная страница */}
           <Route path="/:lang" element={
             <>
               <Hero currentLang={currentLang} />
@@ -71,42 +69,20 @@ export default function App() {
             </>
           } />
 
-          {/* Страницы всей коллекции */}
-          <Route path="/:lang/kolekcja" element={
-            <div style={{ padding: '120px 40px', textAlign: 'center' }}>
-              <h2 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '28px', color: '#2C2A29', fontWeight: '400', letterSpacing: '2px' }}>
-                {currentLang === 'pl' ? 'Wszystkie dzieła (W przygotowaniu)' : 'All works (Coming soon)'}
-              </h2>
-            </div>
-          } />
-          <Route path="/:lang/collection" element={
-            <div style={{ padding: '120px 40px', textAlign: 'center' }}>
-              <h2 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '28px', color: '#2C2A29', fontWeight: '400', letterSpacing: '2px' }}>
-                {currentLang === 'pl' ? 'Wszystkie dzieła (W przygotowaniu)' : 'All works (Coming soon)'}
-              </h2>
-            </div>
-          } />
+          {/* Страница всей коллекции (поддерживает и /pl/kolekcja, и /en/collection) */}
+          <Route path="/:lang/kolekcja" element={<CollectionPage currentLang={currentLang} />} />
+          <Route path="/:lang/collection" element={<CollectionPage currentLang={currentLang} />} />
 
-          {/* Страницы категорий (поддерживают и польские, и английские пути со слешами) */}
-          <Route path="/:lang/kolekcja/:category" element={
-            <div style={{ padding: '120px 40px', textAlign: 'center' }}>
-              <h2 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '28px', color: '#2C2A29', fontWeight: '400', letterSpacing: '2px' }}>
-                {currentLang === 'pl' ? 'Kategoria dzieł (W przygotowaniu)' : 'Category works (Coming soon)'}
-              </h2>
-            </div>
-          } />
-          <Route path="/:lang/collection/:category" element={
-            <div style={{ padding: '120px 40px', textAlign: 'center' }}>
-              <h2 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '28px', color: '#2C2A29', fontWeight: '400', letterSpacing: '2px' }}>
-                {currentLang === 'pl' ? 'Kategoria dzieł (W przygotowaniu)' : 'Category works (Coming soon)'}
-              </h2>
-            </div>
-          } />
+          {/* Страница коллекции с категорией */}
+          <Route path="/:lang/kolekcja/:category" element={<CollectionPage currentLang={currentLang} />} />
+          <Route path="/:lang/collection/:category" element={<CollectionPage currentLang={currentLang} />} />
 
-          {/* Страница 404 с поддержкой префикса языка */}
+          {/* Страница отдельного товара */}
+          <Route path="/:lang/produkt/:id" element={<ProductPage currentLang={currentLang} />} />
+          <Route path="/:lang/product/:id" element={<ProductPage currentLang={currentLang} />} />
+
+          {/* 404 страницы */}
           <Route path="/:lang/*" element={<NotFound currentLang={currentLang} />} />
-          
-          {/* Глобальный резервный 404 */}
           <Route path="*" element={<NotFound currentLang={currentLang} />} />
         </Routes>
       </main>

@@ -39,8 +39,8 @@ export default function Collection({ currentLang }) {
       titleEn: 'Decorative Objects',
       descPl: 'Formy rzeźbiarskie stanowiące wyjątkowy akcent we wnętrzu.',
       descEn: 'Sculptural forms making a unique statement in the interior.',
-      linkTextPl: 'Zobacz obiekty',
-      linkTextEn: 'View objects'
+      linkTextPl: 'Zobacz dekoracje',
+      linkTextEn: 'View decor'
     }
   ];
 

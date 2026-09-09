@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { useLocation } from 'react-router-dom';
 import './ContactForm.css';
 
 export default function ContactForm({ currentLang }) {
+  const location = useLocation();
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef(null);
 
-  // Состояния для полей формы
   const [category, setCategory] = useState('clock');
   const [size, setSize] = useState('');
   const [color, setColor] = useState('gold');
@@ -16,23 +17,42 @@ export default function ContactForm({ currentLang }) {
   const [instagram, setInstagram] = useState('');
   const [message, setMessage] = useState('');
 
-  // Состояния для ошибок валидации, показа и плавной анимации закрытия попапа
   const [errors, setErrors] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
 
+  // Заполняем данные при переходе со страницы товара
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.category) setCategory(location.state.category);
+      if (location.state.workName) setWorkName(location.state.workName);
+      if (location.state.size) setSize(location.state.size);
+      if (location.state.color) setColor(location.state.color);
+    }
+  }, [location.state]);
+
+  // Плавная автопрокрутка прямо к форме при получении данных
+  useEffect(() => {
+    if (location.state && sectionRef.current) {
+      setTimeout(() => {
+        sectionRef.current.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
+  }, [location.state]);
+
   // Обновляем доступные размеры при смене категории
   useEffect(() => {
-    if (category === 'clock') {
-      setSize('60 cm');
-    } else if (category === 'painting') {
-      setSize('70x70 cm');
-    } else if (category === 'decor') {
-      setSize('50 cm');
+    if (!location.state || location.state.category !== category) {
+      if (category === 'clock') {
+        setSize('60 cm');
+      } else if (category === 'painting') {
+        setSize('70x70 cm');
+      } else if (category === 'decor') {
+        setSize('50 cm');
+      }
     }
-  }, [category]);
+  }, [category, location.state]);
 
-  // Анимация появления секции при скролле
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -51,7 +71,6 @@ export default function ContactForm({ currentLang }) {
     return () => observer.disconnect();
   }, []);
 
-  // Жесткая блокировка скролла страницы с сохранением текущей позиции
   useEffect(() => {
     if (isModalOpen) {
       const scrollY = window.scrollY;
@@ -73,7 +92,6 @@ export default function ContactForm({ currentLang }) {
     }
   }, [isModalOpen]);
 
-  // Списки размеров для каждого типа
   const sizesOptions = {
     clock: [
       { value: '50 cm', label: '50 cm' },
@@ -99,7 +117,6 @@ export default function ContactForm({ currentLang }) {
     ]
   };
 
-  // Проверка email
   const validateEmail = (emailStr) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(String(emailStr).toLowerCase());
@@ -109,7 +126,6 @@ export default function ContactForm({ currentLang }) {
     e.preventDefault();
     let newErrors = {};
 
-    // Проверяем обязательные поля
     if (!workName.trim()) newErrors.workName = true;
     if (!name.trim()) newErrors.name = true;
     if (!email.trim() || !validateEmail(email)) newErrors.email = true;
@@ -117,7 +133,6 @@ export default function ContactForm({ currentLang }) {
 
     setErrors(newErrors);
 
-    // Если ошибок нет — открываем попап и очищаем форму
     if (Object.keys(newErrors).length === 0) {
       setIsClosing(false);
       setIsModalOpen(true);
@@ -129,7 +144,6 @@ export default function ContactForm({ currentLang }) {
     }
   };
 
-  // Плавное закрытие с задержкой под анимацию (350мс)
   const closeModal = () => {
     setIsClosing(true);
     setTimeout(() => {
@@ -138,7 +152,6 @@ export default function ContactForm({ currentLang }) {
     }, 350);
   };
 
-  // Модалка через Portal с плавной анимацией открытия и закрытия
   const modal = isModalOpen
     ? createPortal(
         <div className={`modal-overlay ${isClosing ? 'closing' : 'active'}`} onClick={closeModal}>
@@ -167,7 +180,6 @@ export default function ContactForm({ currentLang }) {
       className={`contact-section ${isVisible ? 'fade-in-active' : ''}`}
     >
       <div className="contact-container">
-        {/* Заголовок с линиями */}
         <div className="section-header-line">
           <span className="line left-line"></span>
           <h2 className="section-title">
@@ -177,7 +189,6 @@ export default function ContactForm({ currentLang }) {
         </div>
 
         <form className="contact-form" onSubmit={handleSubmit} noValidate>
-          {/* Строка 1 */}
           <div className="form-row">
             <div className="form-group">
               <label className="form-label">
@@ -248,7 +259,6 @@ export default function ContactForm({ currentLang }) {
             </div>
           </div>
 
-          {/* Строка 2 */}
           <div className="form-row">
             <div className="form-group">
               <label className="form-label">
@@ -304,7 +314,6 @@ export default function ContactForm({ currentLang }) {
             </div>
           </div>
 
-          {/* Строка 3: Текст сообщения */}
           <div className="form-group full-width">
             <label className="form-label">
               {currentLang === 'pl' ? 'Opowiedz mi o swoim projekcie...' : 'Tell me about your project...'}
@@ -325,7 +334,6 @@ export default function ContactForm({ currentLang }) {
             )}
           </div>
 
-          {/* Кнопка отправки */}
           <div className="form-submit-wrapper">
             <button type="submit" className="submit-btn">
               {currentLang === 'pl' ? 'Wyślij zapytanie' : 'Send inquiry'}
@@ -334,7 +342,6 @@ export default function ContactForm({ currentLang }) {
         </form>
       </div>
 
-      {/* Модалка через Portal */}
       {modal}
     </section>
   );
