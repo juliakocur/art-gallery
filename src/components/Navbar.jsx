@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './Navbar.css';
 
 export default function Navbar({ currentLang, setCurrentLang }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     if (isMenuOpen) {
@@ -24,12 +27,57 @@ export default function Navbar({ currentLang, setCurrentLang }) {
     setIsMenuOpen(false);
   };
 
+  // Умная функция с учетом текущего языка
+  const handleScrollToSection = (e, sectionId) => {
+    e.preventDefault();
+    closeMenu();
+
+    const targetHomeRoute = `/${currentLang}`;
+
+    const scrollToElement = () => {
+      let attempts = 0;
+      const maxAttempts = 20;
+
+      const checkAndScroll = () => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        } else if (attempts < maxAttempts) {
+          attempts++;
+          setTimeout(checkAndScroll, 50);
+        }
+      };
+
+      checkAndScroll();
+    };
+
+    // Если мы не на главной странице текущего языка, переходим на неё с сохранением языка
+    if (location.pathname !== targetHomeRoute) {
+      navigate(targetHomeRoute);
+      setTimeout(scrollToElement, 50);
+    } else {
+      scrollToElement();
+    }
+  };
+
+  const handleLogoClick = (e) => {
+    e.preventDefault();
+    closeMenu();
+    const targetHomeRoute = `/${currentLang}`;
+
+    if (location.pathname !== targetHomeRoute) {
+      navigate(targetHomeRoute);
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   return (
     <header className="header">
       <div className="header-container">
 
         {/* Логотип */}
-        <a href="#" className="logo" onClick={closeMenu}>
+        <a href={`/${currentLang}`} className="logo" onClick={handleLogoClick}>
           <span className="logo-title">JULIA KOCUR</span>
 
           <span className="logo-subtitle">
@@ -49,15 +97,27 @@ export default function Navbar({ currentLang, setCurrentLang }) {
 
         {/* Десктопная навигация */}
         <nav className="nav-desktop">
-          <a href="#kolekcja" className="nav-link">
+          <a 
+            href="#kolekcja" 
+            className="nav-link"
+            onClick={(e) => handleScrollToSection(e, 'kolekcja')}
+          >
             {currentLang === 'pl' ? 'Kolekcja' : 'Collection'}
           </a>
 
-          <a href="#o-sztuce" className="nav-link">
+          <a 
+            href="#o-sztuce" 
+            className="nav-link"
+            onClick={(e) => handleScrollToSection(e, 'o-sztuce')}
+          >
             {currentLang === 'pl' ? 'O sztuce' : 'About'}
           </a>
 
-          <a href="#jak-zamowic" className="nav-link">
+          <a 
+            href="#jak-zamowic" 
+            className="nav-link"
+            onClick={(e) => handleScrollToSection(e, 'jak-zamowic')}
+          >
             {currentLang === 'pl' ? 'Jak zamówić' : 'How to order'}
           </a>
         </nav>
@@ -116,7 +176,7 @@ export default function Navbar({ currentLang, setCurrentLang }) {
           <a
             href="#kolekcja"
             className="mobile-link"
-            onClick={closeMenu}
+            onClick={(e) => handleScrollToSection(e, 'kolekcja')}
           >
             {currentLang === 'pl'
               ? 'Kolekcja'
@@ -126,7 +186,7 @@ export default function Navbar({ currentLang, setCurrentLang }) {
           <a
             href="#jak-zamowic"
             className="mobile-link"
-            onClick={closeMenu}
+            onClick={(e) => handleScrollToSection(e, 'jak-zamowic')}
           >
             {currentLang === 'pl'
               ? 'Jak zamówić'
@@ -136,7 +196,7 @@ export default function Navbar({ currentLang, setCurrentLang }) {
           <a
             href="#o-sztuce"
             className="mobile-link"
-            onClick={closeMenu}
+            onClick={(e) => handleScrollToSection(e, 'o-sztuce')}
           >
             {currentLang === 'pl'
               ? 'O sztuce'

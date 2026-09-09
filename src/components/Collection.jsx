@@ -1,10 +1,15 @@
 import React, { useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Collection.css';
 
 export default function Collection({ currentLang }) {
+  const navigate = useNavigate();
+
   const items = [
     {
-      id: 1,
+      id: 'clocks',
+      slugPl: 'zegary',
+      slugEn: 'clocks',
       image: '/images/clock.jpg',
       titlePl: 'Zegary',
       titleEn: 'Clocks',
@@ -14,7 +19,9 @@ export default function Collection({ currentLang }) {
       linkTextEn: 'View clocks'
     },
     {
-      id: 2,
+      id: 'paintings',
+      slugPl: 'obrazy',
+      slugEn: 'paintings',
       image: '/images/relief.jpg',
       titlePl: 'Obrazy',
       titleEn: 'Paintings',
@@ -24,7 +31,9 @@ export default function Collection({ currentLang }) {
       linkTextEn: 'View paintings'
     },
     {
-      id: 3,
+      id: 'decor',
+      slugPl: 'dekoracje',
+      slugEn: 'decor',
       image: '/images/decor.jpg',
       titlePl: 'Obiekty dekoracyjne',
       titleEn: 'Decorative Objects',
@@ -56,6 +65,17 @@ export default function Collection({ currentLang }) {
     return () => observer.disconnect();
   }, []);
 
+  const handleCardClick = (item) => {
+    const categorySlug = currentLang === 'pl' ? item.slugPl : item.slugEn;
+    const collectionWord = currentLang === 'pl' ? 'kolekcja' : 'collection';
+    navigate(`/${currentLang}/${collectionWord}/${categorySlug}`);
+  };
+
+  const handleAllClick = () => {
+    const collectionWord = currentLang === 'pl' ? 'kolekcja' : 'collection';
+    navigate(`/${currentLang}/${collectionWord}`);
+  };
+
   return (
     <section className="collection-section" id="kolekcja" ref={sectionRef}>
       <div className="collection-container">
@@ -82,6 +102,7 @@ export default function Collection({ currentLang }) {
               className="collection-card" 
               key={item.id}
               style={{ transitionDelay: `${index * 0.2}s` }}
+              onClick={() => handleCardClick(item)}
             >
               <div className="card-image-wrapper">
                 <div className="card-bg-placeholder" style={{ backgroundColor: '#F0ECE4' }}></div>
@@ -93,16 +114,37 @@ export default function Collection({ currentLang }) {
                   <p className="card-desc">
                     {currentLang === 'pl' ? item.descPl : item.descEn}
                   </p>
-                  <a href="#kontakt" className="card-link">
+                  
+                  <button 
+                    type="button" 
+                    className="card-link"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleCardClick(item);
+                    }}
+                  >
                     <span>{currentLang === 'pl' ? item.linkTextPl : item.linkTextEn}</span>
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M5 12H19M19 12L12 5M19 12L12 19" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="collection-footer-btn-wrapper">
+          <button 
+            type="button" 
+            className="collection-all-btn"
+            onClick={handleAllClick}
+          >
+            <span>{currentLang === 'pl' ? 'Zobacz całą kolekcję' : 'View full collection'}</span>
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5 12H19M19 12L12 5M19 12L12 19" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
         </div>
 
       </div>

@@ -1,3 +1,4 @@
+/* ===== Collection Section ===== */
 .collection-section {
   width: 100%;
   padding: 100px 0 0 0;
@@ -126,8 +127,6 @@
   letter-spacing: 2px;
   margin-bottom: 10px;
   color: #F4F1EA;
-  /* Жестко резервируем место ровно под 2 строки, даже если заголовок в 1 строку. 
-     Теперь высота блока заголовков у всех карточек будет абсолютно одинаковой! */
   min-height: 58px; 
   display: flex;
   align-items: center;
@@ -140,22 +139,24 @@
   line-height: 1.5;
   color: #D6D0C5;
   margin-bottom: 20px;
-  /* То же самое для описания — фиксируем высоту под 2 строки текста */
   min-height: 40px;
 }
 
-/* Ссылка с плавным ховером и анимацией иконки */
 .card-link {
   font-family: 'Inter', sans-serif;
   font-size: 12px;
   letter-spacing: 1.5px;
   text-transform: uppercase;
   color: #C5A880;
+  background: none;
+  border: none;
+  padding: 0;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
   gap: 8px;
   width: fit-content;
+  cursor: pointer;
   transition: color 0.4s ease;
 }
 
@@ -173,6 +174,48 @@
 .card-link:hover svg {
   transform: translateX(6px);
   stroke: #D6D0C5;
+}
+
+/* Кнопка «Zobacz całą kolekcję» внизу */
+.collection-footer-btn-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+}
+
+.collection-all-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background-color: transparent;
+  color: #6E6863;
+  border: 1px solid #C5A880;
+  padding: 14px 36px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.4s ease;
+}
+
+.collection-all-btn svg {
+  width: 16px;
+  height: 16px;
+  stroke: #6E6863;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.4s ease;
+}
+
+.collection-all-btn:hover {
+  background-color: #C5A880;
+  border-color: #C5A880;
+  color: #F4F1EA;
+}
+
+.collection-all-btn:hover svg {
+  transform: translateX(6px);
+  stroke: #F4F1EA;
 }
 
 @media (max-width: 968px) {
@@ -197,12 +240,22 @@
     padding: 30px 24px;
   }
   
-  .card-title {
-    min-height: auto;
-  }
-  
+  .card-title,
   .card-desc {
     min-height: auto;
-    margin-bottom: 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  .collection-footer-btn-wrapper {
+    margin-top: 36px;
+  }
+  
+  .collection-all-btn {
+    width: 100%;
+    max-width: 300px;
+    padding: 14px 20px;
+    justify-content: center;
+    text-align: center;
   }
 }

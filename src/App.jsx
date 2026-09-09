@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Collection from './components/Collection';
@@ -10,89 +10,57 @@ import ContactForm from './components/ContactForm';
 import Footer from './components/Footer';
 import CookieBanner from './components/CookieBanner';
 import LegalModals from './components/LegalModals';
+import NotFound from './components/NotFound';
 import './App.css';
 
-// Компонент страницы 404 прямо здесь (либо можешь вынести в отдельный файл src/components/NotFound.jsx)
-function NotFound({ currentLang }) {
-  const isPl = currentLang === 'pl';
-
-  return (
-    <div style={{
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      minHeight: '70vh',
-      width: '100%',
-      backgroundColor: '#F7F5F0',
-      padding: '40px 20px',
-      boxSizing: 'border-box',
-    }}>
-      <div style={{ textAlign: 'center', maxWidth: '600px', width: '100%' }}>
-        <h1 style={{
-          fontFamily: "'Cormorant Garamond', serif",
-          fontSize: 'clamp(80px, 15vw, 140px)',
-          fontWeight: 300,
-          color: '#C5A880',
-          lineHeight: 1,
-          margin: '0 0 10px',
-          letterSpacing: '4px'
-        }}>404</h1>
-        <h2 style={{
-          fontFamily: "'Cormorant Garamond', serif",
-          fontSize: 'clamp(24px, 3.5vw, 36px)',
-          fontWeight: 400,
-          textTransform: 'uppercase',
-          letterSpacing: '2px',
-          color: '#2C2A29',
-          margin: '0 0 20px'
-        }}>
-          {isPl ? 'Strona nie znaleziona' : 'Page Not Found'}
-        </h2>
-        <p style={{
-          fontFamily: "'Inter', sans-serif",
-          fontSize: '15px',
-          lineHeight: 1.6,
-          color: '#6E6863',
-          margin: '0 0 40px'
-        }}>
-          {isPl
-            ? 'Przepraszamy, ale strona, której szukasz, nie istnieje lub została przeniesiona.'
-            : 'We are sorry, but the page you are looking for does not exist or has been moved.'}
-        </p>
-        <Link to="/" style={{
-          display: 'inline-block',
-          backgroundColor: '#C5A880',
-          color: '#F4F1EA',
-          padding: '16px 40px',
-          fontFamily: "'Inter', sans-serif",
-          fontSize: '13px',
-          letterSpacing: '1.5px',
-          textTransform: 'uppercase',
-          textDecoration: 'none',
-          borderRadius: '4px',
-          transition: 'background-color 0.3s ease'
-        }}>
-          {isPl ? 'Strona Główna' : 'Back to Home'}
-        </Link>
-      </div>
-    </div>
-  );
-}
-
 export default function App() {
-  const [currentLang, setCurrentLang] = useState('pl');
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  // Состояние для управления модалками юридических документов ('polityka', 'regulamin' или null)
+  // Определяем текущий язык на основе URL (по умолчанию 'pl', если в начале пути /en)
+  const currentLang = location.pathname.startsWith('/en') ? 'en' : 'pl';
+
+  // Состояние для управления модалками юридических документов
   const [activeLegalModal, setActiveLegalModal] = useState(null);
+
+  // Функция переключения языка с синхронным изменением URL (с сохранением слешей и правильных категорий)
+  const handleLangChange = (newLang) => {
+    const currentPath = location.pathname;
+    
+    if (currentLang === newLang) return;
+
+    let newPath = currentPath;
+
+    if (newLang === 'en') {
+      newPath = newPath
+        .replace('/pl', '/en')
+        .replace('/kolekcja', '/collection')
+        .replace('/obrazy', '/paintings')
+        .replace('/zegary', '/clocks')
+        .replace('/dekoracje', '/decor');
+    } else {
+      newPath = newPath
+        .replace('/en', '/pl')
+        .replace('/collection', '/kolekcja')
+        .replace('/paintings', '/obrazy')
+        .replace('/clocks', '/zegary')
+        .replace('/decor', '/dekoracje');
+    }
+
+    navigate(newPath + location.hash);
+  };
 
   return (
     <div className="app">
-      <Navbar currentLang={currentLang} setCurrentLang={setCurrentLang} />
+      <Navbar currentLang={currentLang} setCurrentLang={handleLangChange} />
       
       <main className="main-content">
         <Routes>
-          {/* Главная страница со всеми секциями */}
-          <Route path="/" element={
+          {/* Редирект с корня сайта на /pl по умолчанию */}
+          <Route path="/" element={<Navigate to="/pl" replace />} />
+
+          {/* Главная страница для конкретного языка: /pl или /en */}
+          <Route path="/:lang" element={
             <>
               <Hero currentLang={currentLang} />
               <Collection currentLang={currentLang} />
@@ -103,21 +71,53 @@ export default function App() {
             </>
           } />
 
-          {/* Страница 404 для любых несуществующих путей */}
+          {/* Страницы всей коллекции */}
+          <Route path="/:lang/kolekcja" element={
+            <div style={{ padding: '120px 40px', textAlign: 'center' }}>
+              <h2 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '28px', color: '#2C2A29', fontWeight: '400', letterSpacing: '2px' }}>
+                {currentLang === 'pl' ? 'Wszystkie dzieła (W przygotowaniu)' : 'All works (Coming soon)'}
+              </h2>
+            </div>
+          } />
+          <Route path="/:lang/collection" element={
+            <div style={{ padding: '120px 40px', textAlign: 'center' }}>
+              <h2 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '28px', color: '#2C2A29', fontWeight: '400', letterSpacing: '2px' }}>
+                {currentLang === 'pl' ? 'Wszystkie dzieła (W przygotowaniu)' : 'All works (Coming soon)'}
+              </h2>
+            </div>
+          } />
+
+          {/* Страницы категорий (поддерживают и польские, и английские пути со слешами) */}
+          <Route path="/:lang/kolekcja/:category" element={
+            <div style={{ padding: '120px 40px', textAlign: 'center' }}>
+              <h2 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '28px', color: '#2C2A29', fontWeight: '400', letterSpacing: '2px' }}>
+                {currentLang === 'pl' ? 'Kategoria dzieł (W przygotowaniu)' : 'Category works (Coming soon)'}
+              </h2>
+            </div>
+          } />
+          <Route path="/:lang/collection/:category" element={
+            <div style={{ padding: '120px 40px', textAlign: 'center' }}>
+              <h2 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '28px', color: '#2C2A29', fontWeight: '400', letterSpacing: '2px' }}>
+                {currentLang === 'pl' ? 'Kategoria dzieł (W przygotowaniu)' : 'Category works (Coming soon)'}
+              </h2>
+            </div>
+          } />
+
+          {/* Страница 404 с поддержкой префикса языка */}
+          <Route path="/:lang/*" element={<NotFound currentLang={currentLang} />} />
+          
+          {/* Глобальный резервный 404 */}
           <Route path="*" element={<NotFound currentLang={currentLang} />} />
         </Routes>
       </main>
       
-      {/* Передаем функцию открытия модалок в футер */}
       <Footer 
         currentLang={currentLang} 
         openModal={(modalType) => setActiveLegalModal(modalType)} 
       />
 
-      {/* Баннер согласия на cookies (появляется при первом визите снизу) */}
       <CookieBanner currentLang={currentLang} />
 
-      {/* Светлое модальное окно для Политики и Регламента */}
       <LegalModals 
         activeModal={activeLegalModal} 
         onClose={() => setActiveLegalModal(null)} 
