@@ -21,7 +21,7 @@ export default function CollectionPage({ currentLang }) {
 
   useEffect(() => {
     setActiveTab(category ? pathToId[category] || 'all' : 'all');
-    window.scrollTo(0, 0); // Автоматически прокручиваем наверх при смене URL/категории
+    window.scrollTo(0, 0); 
   }, [category]);
 
   useEffect(() => {
@@ -138,7 +138,7 @@ export default function CollectionPage({ currentLang }) {
 
   const handleTabClick = (tabId) => {
     setActiveTab(tabId);
-    window.scrollTo({ top: 0, behavior: 'smooth' }); // Плавный скролл наверх при клике на фильтр
+    window.scrollTo({ top: 0, behavior: 'smooth' }); 
     if (tabId === 'all') {
       navigate(`/${currentLang}/kolekcja`);
     } else {
@@ -155,7 +155,7 @@ export default function CollectionPage({ currentLang }) {
   return (
     <div className="collection-page" ref={sectionRef}>
       
-      {/* Верхний баннер (текст слева, без подчеркивания у тега) */}
+      {/* Верхний баннер */}
       <div className="collection-hero-banner" key={activeTab}>
         <div 
           className="collection-hero-bg" 
@@ -175,7 +175,7 @@ export default function CollectionPage({ currentLang }) {
         </div>
       </div>
 
-      {/* Навигация по категориям (табы без длинной линии, ховер как в Наве) */}
+      {/* Навигация по категориям */}
       <div className="collection-tabs-container">
         <div className="collection-tabs">
           <button 
@@ -205,7 +205,7 @@ export default function CollectionPage({ currentLang }) {
         </div>
       </div>
 
-      {/* Сетка товаров или заглушка Coming Soon */}
+      {/* Сетка товаров */}
       <div className="collection-products-container">
         {filteredProducts.length > 0 ? (
           <div className="collection-products-grid">
@@ -220,10 +220,11 @@ export default function CollectionPage({ currentLang }) {
                 }}
               >
                 <div className="product-image-box">
-                  <div 
+                  <img 
+                    src={product.image} 
+                    alt={currentLang === 'pl' ? product.titlePl : product.titleEn} 
                     className="product-img" 
-                    style={{ backgroundImage: `url(${product.image})` }}
-                  ></div>
+                  />
                 </div>
                 <div className="product-info">
                   <h3 className="product-name">

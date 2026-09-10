@@ -10,32 +10,18 @@ export default function ProductPage({ currentLang }) {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
+  // Состояния для выбора пользователя
+  const [selectedSize, setSelectedSize] = useState('');
+  const [selectedFinish, setSelectedFinish] = useState('');
+  const [showErrors, setShowErrors] = useState(false);
+  const optionsRef = useRef(null);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [id]);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-          }
-        });
-      },
-      { threshold: 0.05 }
-    );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
-
-  // База данных всех товаров с точными названиями категорий для крошек
+  // База данных всех товаров
   const productsData = {
-    // --- ЗЕГАРЫ ---
     'zegar-01': {
       categoryKey: 'clock',
       categorySlugPl: 'zegary',
@@ -46,8 +32,6 @@ export default function ProductPage({ currentLang }) {
       subtitleEn: 'Organic harmony and gold leaf',
       categoryNamePl: 'Zegary',
       categoryNameEn: 'Clocks',
-      defaultSize: '60 cm',
-      defaultColor: 'gold',
       images: [
         '/images/clock.jpg',
         '/images/relief.jpg',
@@ -55,8 +39,8 @@ export default function ProductPage({ currentLang }) {
       ],
       descPl: 'Ręcznie rzeźbiony zegar ścienny łączący motywy organiczne z precyzyjnym mechanizmem kwarcowym.',
       descEn: 'Hand-sculpted wall clock combining organic motifs with a precise quartz movement.',
-      detailsPl: ['Średnica: 60 cm', 'Masa: ok. 3.2 kg', 'Wykończenie: Ręczne złocenie płatkowe', 'Mechanizm: Cichy, płynący'],
-      detailsEn: ['Diameter: 60 cm', 'Weight: approx. 3.2 kg', 'Finish: Hand-gilded with metal leaf', 'Mechanism: Silent, sweep movement']
+      detailsPl: ['Średnica: 60 cm', 'Masa: ok. 3.2 kg', 'Mechanizm: Cichy, płynący'],
+      detailsEn: ['Diameter: 60 cm', 'Weight: approx. 3.2 kg', 'Mechanism: Silent, sweep movement']
     },
     'zegar-02': {
       categoryKey: 'clock',
@@ -68,16 +52,12 @@ export default function ProductPage({ currentLang }) {
       subtitleEn: 'Subtle texture and light',
       categoryNamePl: 'Zegary',
       categoryNameEn: 'Clocks',
-      defaultSize: '60 cm',
-      defaultColor: 'gold',
       images: ['/images/clock.jpg', '/images/relief.jpg'],
       descPl: 'Subtelna kompozycja inspirowana naturą.',
       descEn: 'Subtle composition inspired by nature.',
       detailsPl: ['Średnica: 60 cm'],
       detailsEn: ['Diameter: 60 cm']
     },
-
-    // --- ОБРАЗЫ (КАРТИНЫ) ---
     'obraz-01': {
       categoryKey: 'painting',
       categorySlugPl: 'obrazy',
@@ -88,16 +68,12 @@ export default function ProductPage({ currentLang }) {
       subtitleEn: 'Textural painting full of depth',
       categoryNamePl: 'Obrazy',
       categoryNameEn: 'Paintings',
-      defaultSize: '70x70 cm',
-      defaultColor: 'gold',
       images: ['/images/relief.jpg', '/images/clock.jpg'],
       descPl: 'Unikalny obraz strukturalny stworzony przy użyciu autorskiej techniki reliefowej.',
       descEn: 'A unique structural painting created using an original relief technique.',
       detailsPl: ['Wymiary: 70x70 cm', 'Technika: Mixed media / Relief'],
       detailsEn: ['Dimensions: 70x70 cm', 'Technique: Mixed media / Relief']
     },
-
-    // --- ДЕКОРАТИВНЫЕ ОБЪЕКТЫ (включая obiekt-01 из твоего URL) ---
     'dekor-01': {
       categoryKey: 'decor',
       categorySlugPl: 'dekoracje',
@@ -108,8 +84,6 @@ export default function ProductPage({ currentLang }) {
       subtitleEn: 'Sculptural interior object',
       categoryNamePl: 'Dekoracje',
       categoryNameEn: 'Decor',
-      defaultSize: '50 cm',
-      defaultColor: 'gold',
       images: ['/images/interior-clock.jpg', '/images/relief.jpg'],
       descPl: 'Trójwymiarowy obiekt dekoracyjny o płynnych, organicznych liniach.',
       descEn: 'Three-dimensional decorative object with fluid, organic lines.',
@@ -126,17 +100,51 @@ export default function ProductPage({ currentLang }) {
       subtitleEn: 'Sculptural decorative object',
       categoryNamePl: 'Dekoracje',
       categoryNameEn: 'Decor',
-      defaultSize: '50 cm',
-      defaultColor: 'gold',
       images: ['/images/interior-clock.jpg', '/images/relief.jpg'],
       descPl: 'Wyjątkowy obiekt rzeźbiarski wzbogacający nowoczesne wnętrza.',
       descEn: 'An exceptional sculptural object enhancing modern interiors.',
-      detailsPl: ['Wymiary: 50 cm', 'Wykończenie: Ręczne złocenie'],
-      detailsEn: ['Dimensions: 50 cm', 'Finish: Hand gilding']
+      detailsPl: ['Wymiary: 50 cm'],
+      detailsEn: ['Dimensions: 50 cm']
     }
   };
 
   const product = productsData[id] || productsData['zegar-01'];
+
+  // Списки размеров для всех категорий
+  const sizesOptions = {
+    clock: [
+      { value: '50 cm', label: '50 cm' },
+      { value: '60 cm', label: '60 cm' },
+      { value: '70 cm', label: '70 cm' },
+      { value: '80 cm', label: '80 cm' },
+      { value: '90 cm', label: '90 cm' },
+      { value: '100 cm', label: '100 cm' },
+      { value: 'inny', label: currentLang === 'pl' ? 'Inny rozmiar' : 'Other size' }
+    ],
+    painting: [
+      { value: '50x70 cm', label: '50x70 cm' },
+      { value: '70x70 cm', label: '70x70 cm' },
+      { value: '70x100 cm', label: '70x100 cm' },
+      { value: '100x100 cm', label: '100x100 cm' },
+      { value: 'inny', label: currentLang === 'pl' ? 'Inny rozmiar' : 'Other size' }
+    ],
+    decor: [
+      { value: '30 cm', label: '30 cm' },
+      { value: '50 cm', label: '50 cm' },
+      { value: '70 cm', label: '70 cm' },
+      { value: 'inny', label: currentLang === 'pl' ? 'Inny rozmiar' : 'Other size' }
+    ]
+  };
+
+  // Варианты отделки со стабильными системными ключами
+  const finishOptions = [
+    { value: 'gold', labelPl: 'Złoto', labelEn: 'Gold', colorCode: '#C5A880' },
+    { value: 'silver', labelPl: 'Srebro', labelEn: 'Silver', colorCode: '#B0B0B0' },
+    { value: 'red', labelPl: 'Czerwień', labelEn: 'Red', colorCode: '#A83232' },
+    { value: 'none', labelPl: 'Bez wykończenia', labelEn: 'No finish', colorCode: '#E5E1DA', isPlain: true }
+  ];
+
+  const currentCategorySizes = sizesOptions[product.categoryKey] || sizesOptions.clock;
 
   const handleBackToCategory = () => {
     const catSlug = currentLang === 'pl' ? product.categorySlugPl : product.categorySlugEn;
@@ -144,19 +152,31 @@ export default function ProductPage({ currentLang }) {
   };
 
   const handleOrderClick = () => {
+    // Проверка валидации: выбран ли размер и отделка
+    if (!selectedSize || !selectedFinish) {
+      setShowErrors(true);
+      if (optionsRef.current) {
+        optionsRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      return;
+    }
+
+    // Передаем все возможные варианты названий полей для надежности
     navigate(`/${currentLang}#kontakt`, {
       state: {
         category: product.categoryKey,
         workName: currentLang === 'pl' ? product.nameOnlyPl : product.nameOnlyEn,
-        size: product.defaultSize,
-        color: product.defaultColor
+        size: selectedSize,
+        wymiar: selectedSize,
+        color: selectedFinish,
+        finish: selectedFinish
       }
     });
   };
 
   return (
     <div className="product-page" ref={sectionRef}>
-      
+      {/* Hero Баннер */}
       <div className="product-hero-banner">
         <div 
           className="product-hero-bg" 
@@ -173,6 +193,7 @@ export default function ProductPage({ currentLang }) {
         </div>
       </div>
 
+      {/* Хлебные крошки */}
       <div className="product-breadcrumbs-container">
         <div className="product-breadcrumbs">
           <span onClick={() => navigate(`/${currentLang}/kolekcja`)} className="breadcrumb-link">
@@ -189,13 +210,14 @@ export default function ProductPage({ currentLang }) {
         </div>
       </div>
 
+      {/* Основной контент товара */}
       <div className="product-detail-container">
         
+        {/* Галерея изображений */}
         <div className="product-gallery-side">
           <div 
             className="product-main-image-wrapper"
             onClick={() => setIsLightboxOpen(true)}
-            title={currentLang === 'pl' ? 'Kliknij, aby powiększyć' : 'Click to zoom'}
           >
             <div 
               className="product-main-img" 
@@ -220,7 +242,8 @@ export default function ProductPage({ currentLang }) {
           )}
         </div>
 
-        <div className="product-info-side">
+        {/* Информация и выбор параметров */}
+        <div className="product-info-side" ref={optionsRef}>
           <h2 className="product-detail-title">
             {currentLang === 'pl' ? product.nameOnlyPl : product.nameOnlyEn}
           </h2>
@@ -229,6 +252,69 @@ export default function ProductPage({ currentLang }) {
             {currentLang === 'pl' ? product.descPl : product.descEn}
           </p>
 
+          {/* БЛОК ВЫБОРА: ОТДЕЛКА (WYKOŃCZENIE) */}
+          <div className="product-option-section">
+            <h3 className={`option-heading ${showErrors && !selectedFinish ? 'error-label' : ''}`}>
+              {currentLang === 'pl' ? 'Wykończenie' : 'Finish'}
+              {showErrors && !selectedFinish && (
+                <span className="validation-alert"> — {currentLang === 'pl' ? 'Wybierz wykończenie' : 'Select finish'}</span>
+              )}
+            </h3>
+            <div className="finish-options-grid">
+              {finishOptions.map((opt) => {
+                const finishLabelText = currentLang === 'pl' ? opt.labelPl : opt.labelEn;
+                const isSelected = selectedFinish === opt.value;
+                return (
+                  <div 
+                    key={opt.value}
+                    className={`finish-card ${isSelected ? 'selected' : ''}`}
+                    onClick={() => {
+                      setSelectedFinish(opt.value);
+                      if (showErrors) setShowErrors(false);
+                    }}
+                  >
+                    <span 
+                      className="finish-dot" 
+                      style={{ backgroundColor: opt.colorCode }}
+                    ></span>
+                    <span className="finish-label">
+                      {finishLabelText}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* БЛОК ВЫБОРА: РАЗМЕР (WYMIAR) */}
+          <div className="product-option-section">
+            <h3 className={`option-heading ${showErrors && !selectedSize ? 'error-label' : ''}`}>
+              {currentLang === 'pl' ? 'Wymiar' : 'Size'}
+              {showErrors && !selectedSize && (
+                <span className="validation-alert"> — {currentLang === 'pl' ? 'Wybierz rozmiar' : 'Select size'}</span>
+              )}
+            </h3>
+            <div className="sizes-options-grid">
+              {currentCategorySizes.map((sz) => {
+                const isSelected = selectedSize === sz.value;
+                return (
+                  <button
+                    type="button"
+                    key={sz.value}
+                    className={`size-btn ${isSelected ? 'selected' : ''}`}
+                    onClick={() => {
+                      setSelectedSize(sz.value);
+                      if (showErrors) setShowErrors(false);
+                    }}
+                  >
+                    {sz.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Спецификация */}
           <div className="product-specs-box">
             <h3 className="specs-title">
               {currentLang === 'pl' ? 'Specyfikacja dzieła' : 'Artwork specifications'}
@@ -243,6 +329,7 @@ export default function ProductPage({ currentLang }) {
             </ul>
           </div>
 
+          {/* Кнопки действий */}
           <div className="product-actions">
             <button type="button" className="product-order-btn" onClick={handleOrderClick}>
               <span>{currentLang === 'pl' ? 'Zamów / Zapytaj o dzieło' : 'Order / Inquire about piece'}</span>
@@ -258,6 +345,7 @@ export default function ProductPage({ currentLang }) {
         </div>
       </div>
 
+      {/* Лайтбокс */}
       {isLightboxOpen && (
         <div className="lightbox-overlay" onClick={() => setIsLightboxOpen(false)}>
           <button className="lightbox-close" onClick={() => setIsLightboxOpen(false)}>&times;</button>
@@ -275,7 +363,6 @@ export default function ProductPage({ currentLang }) {
           </div>
         </div>
       )}
-
     </div>
   );
 }

@@ -10,7 +10,7 @@ export default function ContactForm({ currentLang }) {
 
   const [category, setCategory] = useState('clock');
   const [size, setSize] = useState('');
-  const [color, setColor] = useState('gold');
+  const [color, setColor] = useState('');
   const [workName, setWorkName] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -21,13 +21,22 @@ export default function ContactForm({ currentLang }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
 
+  // Состояния для отслеживания открытых селектов (чтобы крутить стрелочки)
+  const [openSelect, setOpenSelect] = useState(null);
+
   // Заполняем данные при переходе со страницы товара
   useEffect(() => {
     if (location.state) {
       if (location.state.category) setCategory(location.state.category);
       if (location.state.workName) setWorkName(location.state.workName);
-      if (location.state.size) setSize(location.state.size);
-      if (location.state.color) setColor(location.state.color);
+      
+      // Читаем размер из любого возможного ключа
+      const incomingSize = location.state.size || location.state.wymiar;
+      if (incomingSize) setSize(incomingSize);
+
+      // Читаем цвет/отделку из любого возможного ключа
+      const incomingColor = location.state.color || location.state.finish;
+      if (incomingColor) setColor(incomingColor);
     }
   }, [location.state]);
 
@@ -39,19 +48,6 @@ export default function ContactForm({ currentLang }) {
       }, 100);
     }
   }, [location.state]);
-
-  // Обновляем доступные размеры при смене категории
-  useEffect(() => {
-    if (!location.state || location.state.category !== category) {
-      if (category === 'clock') {
-        setSize('60 cm');
-      } else if (category === 'painting') {
-        setSize('70x70 cm');
-      } else if (category === 'decor') {
-        setSize('50 cm');
-      }
-    }
-  }, [category, location.state]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -69,7 +65,7 @@ export default function ContactForm({ currentLang }) {
     }
 
     return () => observer.disconnect();
-  }, []);
+  }, [], );
 
   useEffect(() => {
     if (isModalOpen) {
@@ -116,6 +112,14 @@ export default function ContactForm({ currentLang }) {
       { value: 'inny', label: currentLang === 'pl' ? 'Inny rozmiar' : 'Other size' }
     ]
   };
+
+  // Варианты отделки со стабильными ключами (value) и языковыми подписями (label)
+  const finishOptions = [
+    { value: 'gold', label: currentLang === 'pl' ? 'Złoto' : 'Gold' },
+    { value: 'silver', label: currentLang === 'pl' ? 'Srebro' : 'Silver' },
+    { value: 'red', label: currentLang === 'pl' ? 'Czerwień' : 'Red' },
+    { value: 'none', label: currentLang === 'pl' ? 'Bez wykończenia' : 'No finish' }
+  ];
 
   const validateEmail = (emailStr) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -190,14 +194,26 @@ export default function ContactForm({ currentLang }) {
 
         <form className="contact-form" onSubmit={handleSubmit} noValidate>
           <div className="form-row">
+            {/* Поле 1: Категория */}
             <div className="form-group">
               <label className="form-label">
                 {currentLang === 'pl' ? 'Co Cię interesuje?' : 'What are you interested in?'}
               </label>
               <select
-                className="form-select"
+                className={`form-select ${openSelect === 'category' ? 'is-open' : ''}`}
                 value={category}
-                onChange={(e) => setCategory(e.target.value)}
+                onMouseDown={() => setOpenSelect('category')}
+                onBlur={() => setOpenSelect(null)}
+                onChange={(e) => {
+                  const newCat = e.target.value;
+                  setCategory(newCat);
+                  setOpenSelect(null);
+                  
+                  // Устанавливаем дефолтный размер только при ручной смене категории пользователем
+                  if (newCat === 'clock') setSize('60 cm');
+                  else if (newCat === 'painting') setSize('70x70 cm');
+                  else if (newCat === 'decor') setSize('50 cm');
+                }}
               >
                 <option value="clock">{currentLang === 'pl' ? 'Zegar' : 'Clock'}</option>
                 <option value="painting">{currentLang === 'pl' ? 'Obraz' : 'Painting'}</option>
@@ -205,6 +221,7 @@ export default function ContactForm({ currentLang }) {
               </select>
             </div>
 
+            {/* Поле 2: Название работы */}
             <div className="form-group">
               <label className="form-label">
                 {currentLang === 'pl' ? 'Nazwa pracy' : 'Artwork name'}
@@ -226,16 +243,22 @@ export default function ContactForm({ currentLang }) {
               )}
             </div>
 
+            {/* Поле 3: Размер */}
             <div className="form-group">
               <label className="form-label">
                 {currentLang === 'pl' ? 'Wybrany rozmiar' : 'Selected size'}
               </label>
               <select
-                className="form-select"
+                className={`form-select ${openSelect === 'size' ? 'is-open' : ''}`}
                 value={size}
-                onChange={(e) => setSize(e.target.value)}
+                onMouseDown={() => setOpenSelect('size')}
+                onBlur={() => setOpenSelect(null)}
+                onChange={(e) => {
+                  setSize(e.target.value);
+                  setOpenSelect(null);
+                }}
               >
-                {sizesOptions[category].map((opt) => (
+                {sizesOptions[category]?.map((opt) => (
                   <option key={opt.value} value={opt.value}>
                     {opt.label}
                   </option>
@@ -243,18 +266,29 @@ export default function ContactForm({ currentLang }) {
               </select>
             </div>
 
+            {/* Поле 4: Цвет / отделка */}
             <div className="form-group">
               <label className="form-label">
                 {currentLang === 'pl' ? 'Kolor / Wykończenie' : 'Color / Finish'}
               </label>
               <select
-                className="form-select"
+                className={`form-select ${openSelect === 'color' ? 'is-open' : ''}`}
                 value={color}
-                onChange={(e) => setColor(e.target.value)}
+                onMouseDown={() => setOpenSelect('color')}
+                onBlur={() => setOpenSelect(null)}
+                onChange={(e) => {
+                  setColor(e.target.value);
+                  setOpenSelect(null);
+                }}
               >
-                <option value="gold">{currentLang === 'pl' ? 'Złoty' : 'Gold'}</option>
-                <option value="silver">{currentLang === 'pl' ? 'Srebrny' : 'Silver'}</option>
-                <option value="other">{currentLang === 'pl' ? 'Inny / Własny' : 'Other / Custom'}</option>
+                <option value="" disabled>
+                  {currentLang === 'pl' ? 'Wybierz wykończenie' : 'Select finish'}
+                </option>
+                {finishOptions.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
