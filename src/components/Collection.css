@@ -231,7 +231,7 @@
 /* ===== Responsive Design ===== */
 
 /* На планшетах сразу переходим на 1 колонку друг под друга */
-@media (max-width: 1024px) {
+@media (max-width: 968px) {
   .collection-grid {
     grid-template-columns: 1fr;
     max-width: 600px;
@@ -240,6 +240,10 @@
   
   .collection-card {
     height: 420px;
+  }
+
+  .collection-container {
+    padding: 0 20px;
   }
 }
 

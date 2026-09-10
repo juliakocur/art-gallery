@@ -136,7 +136,6 @@ export default function ProductPage({ currentLang }) {
     ]
   };
 
-  // Варианты отделки со стабильными системными ключами
   const finishOptions = [
     { value: 'gold', labelPl: 'Złoto', labelEn: 'Gold', colorCode: '#C5A880' },
     { value: 'silver', labelPl: 'Srebro', labelEn: 'Silver', colorCode: '#B0B0B0' },
@@ -146,13 +145,23 @@ export default function ProductPage({ currentLang }) {
 
   const currentCategorySizes = sizesOptions[product.categoryKey] || sizesOptions.clock;
 
+  // Функции для листания слайдера по кругу
+  const handlePrevImage = (e) => {
+    e.stopPropagation();
+    setActiveImageIndex((prev) => (prev === 0 ? product.images.length - 1 : prev - 1));
+  };
+
+  const handleNextImage = (e) => {
+    e.stopPropagation();
+    setActiveImageIndex((prev) => (prev === product.images.length - 1 ? 0 : prev + 1));
+  };
+
   const handleBackToCategory = () => {
     const catSlug = currentLang === 'pl' ? product.categorySlugPl : product.categorySlugEn;
     navigate(`/${currentLang}/kolekcja/${catSlug}`);
   };
 
   const handleOrderClick = () => {
-    // Проверка валидации: выбран ли размер и отделка
     if (!selectedSize || !selectedFinish) {
       setShowErrors(true);
       if (optionsRef.current) {
@@ -161,7 +170,6 @@ export default function ProductPage({ currentLang }) {
       return;
     }
 
-    // Передаем все возможные варианты названий полей для надежности
     navigate(`/${currentLang}#kontakt`, {
       state: {
         category: product.categoryKey,
@@ -192,7 +200,7 @@ export default function ProductPage({ currentLang }) {
           </p>
         </div>
       </div>
-
+      
       {/* Хлебные крошки */}
       <div className="product-breadcrumbs-container">
         <div className="product-breadcrumbs">
@@ -213,7 +221,7 @@ export default function ProductPage({ currentLang }) {
       {/* Основной контент товара */}
       <div className="product-detail-container">
         
-        {/* Галерея изображений */}
+        {/* Галерея изображений (Слайдер) */}
         <div className="product-gallery-side">
           <div 
             className="product-main-image-wrapper"
@@ -223,6 +231,29 @@ export default function ProductPage({ currentLang }) {
               className="product-main-img" 
               style={{ backgroundImage: `url(${product.images[activeImageIndex]})` }}
             ></div>
+
+            {/* Стрелки слайдера на фото */}
+            {product.images.length > 1 && (
+              <>
+                <button 
+                  className={`slider-arrow slider-arrow-prev ${activeImageIndex === 0 ? 'disabled' : ''}`} 
+                  onClick={handlePrevImage}
+                  disabled={activeImageIndex === 0}
+                  aria-label="Previous slide"
+                >
+                  &#10094;
+                </button>
+                <button 
+                  className={`slider-arrow slider-arrow-next ${activeImageIndex === product.images.length - 1 ? 'disabled' : ''}`} 
+                  onClick={handleNextImage}
+                  disabled={activeImageIndex === product.images.length - 1}
+                  aria-label="Next slide"
+                >
+                  &#10095;
+                </button>
+              </>
+            )}
+
             <div className="zoom-hint">
               <span>{currentLang === 'pl' ? 'Powiększ' : 'Zoom'}</span>
             </div>
@@ -252,7 +283,7 @@ export default function ProductPage({ currentLang }) {
             {currentLang === 'pl' ? product.descPl : product.descEn}
           </p>
 
-          {/* БЛОК ВЫБОРА: ОТДЕЛКА (WYKOŃCZENIE) */}
+          {/* Отделка */}
           <div className="product-option-section">
             <h3 className={`option-heading ${showErrors && !selectedFinish ? 'error-label' : ''}`}>
               {currentLang === 'pl' ? 'Wykończenie' : 'Finish'}
@@ -286,7 +317,7 @@ export default function ProductPage({ currentLang }) {
             </div>
           </div>
 
-          {/* БЛОК ВЫБОРА: РАЗМЕР (WYMIAR) */}
+          {/* Размер */}
           <div className="product-option-section">
             <h3 className={`option-heading ${showErrors && !selectedSize ? 'error-label' : ''}`}>
               {currentLang === 'pl' ? 'Wymiar' : 'Size'}
@@ -334,32 +365,38 @@ export default function ProductPage({ currentLang }) {
             <button type="button" className="product-order-btn" onClick={handleOrderClick}>
               <span>{currentLang === 'pl' ? 'Zamów / Zapytaj o dzieło' : 'Order / Inquire about piece'}</span>
             </button>
-            
-            <button type="button" className="product-back-btn" onClick={handleBackToCategory}>
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M19 12H5M5 12L12 19M5 12L12 5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-              <span>{currentLang === 'pl' ? 'Powrót do galerii' : 'Back to gallery'}</span>
-            </button>
           </div>
         </div>
       </div>
 
-      {/* Лайтбокс */}
+      {/* Лайтбокс с полупрозрачным фоном и стрелками */}
       {isLightboxOpen && (
         <div className="lightbox-overlay" onClick={() => setIsLightboxOpen(false)}>
           <button className="lightbox-close" onClick={() => setIsLightboxOpen(false)}>&times;</button>
+          
           <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
-            <img src={product.images[activeImageIndex]} alt="Enlarged artwork" />
-            <div className="lightbox-nav">
-              {product.images.map((_, idx) => (
+            {product.images.length > 1 && (
+              <>
                 <button 
-                  key={idx} 
-                  className={`lightbox-dot ${activeImageIndex === idx ? 'active' : ''}`}
-                  onClick={() => setActiveImageIndex(idx)}
-                ></button>
-              ))}
-            </div>
+                  className={`slider-arrow slider-arrow-prev lightbox-arrow ${activeImageIndex === 0 ? 'disabled' : ''}`} 
+                  onClick={handlePrevImage}
+                  disabled={activeImageIndex === 0}
+                  aria-label="Previous slide"
+                >
+                  &#10094;
+                </button>
+                <button 
+                  className={`slider-arrow slider-arrow-next lightbox-arrow ${activeImageIndex === product.images.length - 1 ? 'disabled' : ''}`} 
+                  onClick={handleNextImage}
+                  disabled={activeImageIndex === product.images.length - 1}
+                  aria-label="Next slide"
+                >
+                  &#10095;
+                </button>
+              </>
+            )}
+            
+            <img src={product.images[activeImageIndex]} alt="Enlarged artwork" />
           </div>
         </div>
       )}

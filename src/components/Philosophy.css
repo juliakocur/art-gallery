@@ -132,6 +132,10 @@
       grid-template-columns: repeat(2, 1fr);
       gap: 40px 30px;
     }
+
+    .philosophy-container {
+      padding: 0 20px;
+    }
   }
   
   /* Адаптив: на экранах меньше 550px разрешаем перенос строк для заголовка */

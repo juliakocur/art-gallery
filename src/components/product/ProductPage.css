@@ -38,8 +38,9 @@
   position: relative;
   z-index: 2;
   text-align: center;
-  padding: 0 20px;
+  padding: 0 40px;
   max-width: 900px;
+  box-sizing: border-box;
 }
 
 .product-hero-title {
@@ -61,10 +62,22 @@
   margin: 0;
 }
 
-/* Хлебные крошки */
+/* Основной контейнер товара (макс. 1600px и отступы 40px) */
+.product-detail-container {
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 40px 40px 100px 40px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  box-sizing: border-box;
+  align-items: start;
+}
+
+/* Хлебные крошки: привязаны к тому же контейнеру и центрированию, что и товар */
 .product-breadcrumbs-container {
   width: 100%;
-  max-width: 1400px;
   margin: 0 auto;
   padding: 30px 40px 10px 40px;
   box-sizing: border-box;
@@ -78,6 +91,9 @@
   font-size: 13px;
   letter-spacing: 1px;
   text-transform: uppercase;
+  flex-wrap: wrap;
+  max-width: 600px; /* Ширина в точности как у левой колонки с фото */
+  margin: 0 auto 0 0; /* Выравнивание по левому краю левой колонки */
 }
 
 .breadcrumb-link {
@@ -100,29 +116,21 @@
   font-weight: 500;
 }
 
-/* Основной контейнер товара */
-.product-detail-container {
-  width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 40px 40px 100px 40px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 60px;
-  box-sizing: border-box;
-}
-
-/* Галерея слева */
+/* Галерея слева — ВСЕГДА квадратная и ограничена 600px на любых экранах */
 .product-gallery-side {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  width: 100%;
+  max-width: 600px; 
+  margin: 0 auto;
 }
 
 .product-main-image-wrapper {
   position: relative;
   width: 100%;
-  height: 600px;
+  aspect-ratio: 1 / 1; /* Жесткая пропорция квадрата 1:1 */
+  max-height: 600px;
   border-radius: 6px;
   overflow: hidden;
   cursor: zoom-in;
@@ -166,11 +174,12 @@
 .product-thumbs-grid {
   display: flex;
   gap: 15px;
+  flex-wrap: wrap;
 }
 
 .product-thumb {
-  width: 90px;
-  height: 90px;
+  width: 80px;
+  height: 80px;
   border-radius: 4px;
   background-size: cover;
   background-position: center;
@@ -215,7 +224,7 @@
   margin: 0 0 32px 0;
 }
 
-/* Блоки выбора: Отделка (Wykończenie) и Размер (Wymiar) */
+/* Блоки выбора: Отделка и Размер */
 .product-option-section {
   margin-bottom: 28px;
 }
@@ -498,20 +507,28 @@
     padding: 30px 20px 80px 20px;
   }
 
-  .product-main-image-wrapper {
-    height: 450px;
+  .product-breadcrumbs {
+    max-width: 100%; /* На планшетах и ниже хлебные крошки тянутся на всю ширину блока */
   }
 
   .product-breadcrumbs-container {
-    padding: 20px 20px 0 20px;
+    padding: 30px 20px 10px 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .product-breadcrumbs-container,
+  .product-detail-container {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .product-breadcrumbs-container {
+    padding-top: 20px;
   }
 }
 
 @media (max-width: 600px) {
-  .product-main-image-wrapper {
-    height: 350px;
-  }
-
   .finish-options-grid,
   .sizes-options-grid {
     gap: 8px;
@@ -521,5 +538,10 @@
   .size-btn {
     padding: 8px 12px;
     font-size: 12px;
+  }
+
+  .product-thumb {
+    width: 65px;
+    height: 65px;
   }
 }
