@@ -6,7 +6,6 @@
   box-sizing: border-box;
 }
 
-/* Hero Баннер */
 .product-hero-banner {
   position: relative;
   width: 100%;
@@ -62,7 +61,6 @@
   margin: 0;
 }
 
-/* Основной контейнер товара (макс. 1600px и отступы 40px) */
 .product-detail-container {
   width: 100%;
   max-width: 1600px;
@@ -75,7 +73,6 @@
   align-items: start;
 }
 
-/* Хлебные крошки: привязаны к тому же контейнеру и центрированию, что и товар */
 .product-breadcrumbs-container {
   width: 100%;
   margin: 0 auto;
@@ -92,8 +89,8 @@
   letter-spacing: 1px;
   text-transform: uppercase;
   flex-wrap: wrap;
-  max-width: 600px; /* Ширина в точности как у левой колонки с фото */
-  margin: 0 auto 0 0; /* Выравнивание по левому краю левой колонки */
+  max-width: 600px;
+  margin: 0 auto 0 0;
 }
 
 .breadcrumb-link {
@@ -116,7 +113,6 @@
   font-weight: 500;
 }
 
-/* Галерея слева — ВСЕГДА квадратная и ограничена 600px на любых экранах */
 .product-gallery-side {
   display: flex;
   flex-direction: column;
@@ -129,7 +125,7 @@
 .product-main-image-wrapper {
   position: relative;
   width: 100%;
-  aspect-ratio: 1 / 1; /* Жесткая пропорция квадрата 1:1 */
+  aspect-ratio: 1 / 1;
   max-height: 600px;
   border-radius: 6px;
   overflow: hidden;
@@ -150,6 +146,58 @@
   transform: scale(1.03);
 }
 
+/* ===== СТИЛЬ СТРЕЛОК КАК В HERO-СЕКЦИИ ===== */
+.hero-arrow-box {
+  width: 50px;
+  height: 50px;
+  background: rgba(35, 32, 30, 0.3);
+  border: 1px solid rgba(244, 241, 234, 0.25);
+  border-radius: 4px;
+  color: #F4F1EA;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  padding: 0;
+  z-index: 10;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.product-arrow-prev {
+  left: 20px;
+}
+
+.product-arrow-next {
+  right: 20px;
+}
+
+.hero-arrow-box:hover:not(.disabled) {
+  border-color: #C5A880;
+  color: #C5A880;
+  background: rgba(35, 32, 30, 0.6);
+}
+
+.arrow-icon {
+  width: 22px;
+  height: 22px;
+  stroke-width: 0.75px;
+  transform: scaleX(1.4);
+  transition: transform 0.3s ease;
+}
+
+.hero-arrow-box:hover:not(.disabled) .arrow-icon {
+  transform: scaleX(1.6);
+}
+
+.hero-arrow-box.disabled {
+  opacity: 0.3;
+  cursor: default;
+  pointer-events: none;
+}
+
 .zoom-hint {
   position: absolute;
   bottom: 20px;
@@ -165,6 +213,8 @@
   text-transform: uppercase;
   opacity: 0;
   transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 5;
 }
 
 .product-main-image-wrapper:hover .zoom-hint {
@@ -200,7 +250,6 @@
   box-shadow: 0 0 0 1px #C5A880;
 }
 
-/* Информация справа */
 .product-info-side {
   display: flex;
   flex-direction: column;
@@ -224,7 +273,6 @@
   margin: 0 0 32px 0;
 }
 
-/* Блоки выбора: Отделка и Размер */
 .product-option-section {
   margin-bottom: 28px;
 }
@@ -243,15 +291,15 @@
   gap: 6px;
 }
 
-.option-heading.error-label {
-  color: #c45c5c;
+.error-label {
+  color: #A83232 !important;
 }
 
 .validation-alert {
   font-size: 11px;
   text-transform: none;
+  color: #A83232;
   font-weight: 400;
-  color: #c45c5c;
 }
 
 .finish-options-grid {
@@ -295,7 +343,6 @@
   color: #2C2A29;
 }
 
-/* Сетки размеров */
 .sizes-options-grid {
   display: flex;
   flex-wrap: wrap;
@@ -324,7 +371,6 @@
   border-color: #C5A880;
 }
 
-/* Спецификация */
 .product-specs-box {
   background-color: #fff;
   border: 1px solid #E5E1DA;
@@ -367,7 +413,6 @@
   border-radius: 50%;
 }
 
-/* Кнопки действий */
 .product-actions {
   display: flex;
   flex-direction: column;
@@ -395,48 +440,12 @@
   background-color: #b3956e;
 }
 
-.product-back-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  width: 100%;
-  background-color: transparent;
-  color: #6E6863;
-  border: 1px solid #D6D0C5;
-  padding: 14px 24px;
-  font-family: 'Inter', sans-serif;
-  font-size: 13px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.product-back-btn svg {
-  width: 18px;
-  height: 18px;
-  stroke: currentColor;
-  transition: transform 0.3s ease;
-}
-
-.product-back-btn:hover {
-  border-color: #C5A880;
-  color: #2C2A29;
-  background-color: #fff;
-}
-
-.product-back-btn:hover svg {
-  transform: translateX(-4px);
-}
-
-/* Лайтбокс */
+/* ===== СТАБИЛЬНЫЙ ЛАЙТБОКС С ФИКСИРОВАННЫМИ СТРЕЛКАМИ ===== */
 .lightbox-overlay {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background-color: rgba(35, 32, 30, 0.9);
+  background-color: rgba(35, 32, 30, 0.92);
   backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
@@ -463,43 +472,41 @@
 
 .lightbox-content {
   position: relative;
-  max-width: 90vw;
-  max-height: 85vh;
+  width: 80vw;
+  max-width: 900px;
+  height: 80vh;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 20px;
+  justify-content: center;
+}
+
+.lightbox-image-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .lightbox-content img {
   max-width: 100%;
-  max-height: 75vh;
+  max-height: 100%;
   object-fit: contain;
   border-radius: 4px;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  display: block;
 }
 
-.lightbox-nav {
-  display: flex;
-  gap: 10px;
+/* Фиксация стрелок по бокам контейнера лайтбокса */
+.lightbox-image-container .product-arrow-prev {
+  left: -70px;
 }
 
-.lightbox-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.3);
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  transition: background-color 0.3s ease;
+.lightbox-image-container .product-arrow-next {
+  right: -70px;
 }
 
-.lightbox-dot.active {
-  background-color: #C5A880;
-}
-
-/* ===== Responsive (Адаптив) ===== */
 @media (max-width: 968px) {
   .product-detail-container {
     grid-template-columns: 1fr;
@@ -508,11 +515,22 @@
   }
 
   .product-breadcrumbs {
-    max-width: 100%; /* На планшетах и ниже хлебные крошки тянутся на всю ширину блока */
+    max-width: 100%;
   }
 
   .product-breadcrumbs-container {
     padding: 30px 20px 10px 20px;
+  }
+
+  .lightbox-content {
+    width: 95vw;
+  }
+
+  .lightbox-image-container .product-arrow-prev {
+    left: 10px;
+  }
+  .lightbox-image-container .product-arrow-next {
+    right: 10px;
   }
 }
 
@@ -523,8 +541,14 @@
     padding-right: 24px;
   }
 
-  .product-breadcrumbs-container {
-    padding-top: 20px;
+  .hero-arrow-box {
+    width: 44px;
+    height: 44px;
+  }
+
+  .arrow-icon {
+    width: 18px;
+    height: 18px;
   }
 }
 

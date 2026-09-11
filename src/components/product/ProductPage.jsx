@@ -110,7 +110,6 @@ export default function ProductPage({ currentLang }) {
 
   const product = productsData[id] || productsData['zegar-01'];
 
-  // Списки размеров для всех категорий
   const sizesOptions = {
     clock: [
       { value: '50 cm', label: '50 cm' },
@@ -145,15 +144,18 @@ export default function ProductPage({ currentLang }) {
 
   const currentCategorySizes = sizesOptions[product.categoryKey] || sizesOptions.clock;
 
-  // Функции для листания слайдера по кругу
   const handlePrevImage = (e) => {
-    e.stopPropagation();
-    setActiveImageIndex((prev) => (prev === 0 ? product.images.length - 1 : prev - 1));
+    e?.stopPropagation();
+    if (activeImageIndex > 0) {
+      setActiveImageIndex((prev) => prev - 1);
+    }
   };
 
   const handleNextImage = (e) => {
-    e.stopPropagation();
-    setActiveImageIndex((prev) => (prev === product.images.length - 1 ? 0 : prev + 1));
+    e?.stopPropagation();
+    if (activeImageIndex < product.images.length - 1) {
+      setActiveImageIndex((prev) => prev + 1);
+    }
   };
 
   const handleBackToCategory = () => {
@@ -184,7 +186,6 @@ export default function ProductPage({ currentLang }) {
 
   return (
     <div className="product-page" ref={sectionRef}>
-      {/* Hero Баннер */}
       <div className="product-hero-banner">
         <div 
           className="product-hero-bg" 
@@ -201,7 +202,6 @@ export default function ProductPage({ currentLang }) {
         </div>
       </div>
       
-      {/* Хлебные крошки */}
       <div className="product-breadcrumbs-container">
         <div className="product-breadcrumbs">
           <span onClick={() => navigate(`/${currentLang}/kolekcja`)} className="breadcrumb-link">
@@ -218,10 +218,7 @@ export default function ProductPage({ currentLang }) {
         </div>
       </div>
 
-      {/* Основной контент товара */}
       <div className="product-detail-container">
-        
-        {/* Галерея изображений (Слайдер) */}
         <div className="product-gallery-side">
           <div 
             className="product-main-image-wrapper"
@@ -232,27 +229,28 @@ export default function ProductPage({ currentLang }) {
               style={{ backgroundImage: `url(${product.images[activeImageIndex]})` }}
             ></div>
 
-            {/* Стрелки слайдера на фото */}
-            {product.images.length > 1 && (
-              <>
-                <button 
-                  className={`slider-arrow slider-arrow-prev ${activeImageIndex === 0 ? 'disabled' : ''}`} 
-                  onClick={handlePrevImage}
-                  disabled={activeImageIndex === 0}
-                  aria-label="Previous slide"
-                >
-                  &#10094;
-                </button>
-                <button 
-                  className={`slider-arrow slider-arrow-next ${activeImageIndex === product.images.length - 1 ? 'disabled' : ''}`} 
-                  onClick={handleNextImage}
-                  disabled={activeImageIndex === product.images.length - 1}
-                  aria-label="Next slide"
-                >
-                  &#10095;
-                </button>
-              </>
-            )}
+            {/* Красивые стрелки в стиле Hero */}
+            <button 
+              type="button"
+              className={`hero-arrow-box product-arrow-prev ${activeImageIndex === 0 ? 'disabled' : ''}`}
+              onClick={handlePrevImage}
+              aria-label="Previous slide"
+            >
+              <svg className="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            
+            <button 
+              type="button"
+              className={`hero-arrow-box product-arrow-next ${activeImageIndex === product.images.length - 1 ? 'disabled' : ''}`}
+              onClick={handleNextImage}
+              aria-label="Next slide"
+            >
+              <svg className="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
 
             <div className="zoom-hint">
               <span>{currentLang === 'pl' ? 'Powiększ' : 'Zoom'}</span>
@@ -273,7 +271,6 @@ export default function ProductPage({ currentLang }) {
           )}
         </div>
 
-        {/* Информация и выбор параметров */}
         <div className="product-info-side" ref={optionsRef}>
           <h2 className="product-detail-title">
             {currentLang === 'pl' ? product.nameOnlyPl : product.nameOnlyEn}
@@ -283,7 +280,6 @@ export default function ProductPage({ currentLang }) {
             {currentLang === 'pl' ? product.descPl : product.descEn}
           </p>
 
-          {/* Отделка */}
           <div className="product-option-section">
             <h3 className={`option-heading ${showErrors && !selectedFinish ? 'error-label' : ''}`}>
               {currentLang === 'pl' ? 'Wykończenie' : 'Finish'}
@@ -317,7 +313,6 @@ export default function ProductPage({ currentLang }) {
             </div>
           </div>
 
-          {/* Размер */}
           <div className="product-option-section">
             <h3 className={`option-heading ${showErrors && !selectedSize ? 'error-label' : ''}`}>
               {currentLang === 'pl' ? 'Wymiar' : 'Size'}
@@ -345,7 +340,6 @@ export default function ProductPage({ currentLang }) {
             </div>
           </div>
 
-          {/* Спецификация */}
           <div className="product-specs-box">
             <h3 className="specs-title">
               {currentLang === 'pl' ? 'Specyfikacja dzieła' : 'Artwork specifications'}
@@ -360,7 +354,6 @@ export default function ProductPage({ currentLang }) {
             </ul>
           </div>
 
-          {/* Кнопки действий */}
           <div className="product-actions">
             <button type="button" className="product-order-btn" onClick={handleOrderClick}>
               <span>{currentLang === 'pl' ? 'Zamów / Zapytaj o dzieło' : 'Order / Inquire about piece'}</span>
@@ -369,34 +362,36 @@ export default function ProductPage({ currentLang }) {
         </div>
       </div>
 
-      {/* Лайтбокс с полупрозрачным фоном и стрелками */}
       {isLightboxOpen && (
         <div className="lightbox-overlay" onClick={() => setIsLightboxOpen(false)}>
-          <button className="lightbox-close" onClick={() => setIsLightboxOpen(false)}>&times;</button>
+          <button type="button" className="lightbox-close" onClick={() => setIsLightboxOpen(false)}>&times;</button>
           
           <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
-            {product.images.length > 1 && (
-              <>
-                <button 
-                  className={`slider-arrow slider-arrow-prev lightbox-arrow ${activeImageIndex === 0 ? 'disabled' : ''}`} 
-                  onClick={handlePrevImage}
-                  disabled={activeImageIndex === 0}
-                  aria-label="Previous slide"
-                >
-                  &#10094;
-                </button>
-                <button 
-                  className={`slider-arrow slider-arrow-next lightbox-arrow ${activeImageIndex === product.images.length - 1 ? 'disabled' : ''}`} 
-                  onClick={handleNextImage}
-                  disabled={activeImageIndex === product.images.length - 1}
-                  aria-label="Next slide"
-                >
-                  &#10095;
-                </button>
-              </>
-            )}
-            
-            <img src={product.images[activeImageIndex]} alt="Enlarged artwork" />
+            <div className="lightbox-image-container">
+              <img src={product.images[activeImageIndex]} alt="Enlarged artwork" />
+
+              <button 
+                type="button"
+                className={`hero-arrow-box product-arrow-prev ${activeImageIndex === 0 ? 'disabled' : ''}`}
+                onClick={handlePrevImage}
+                aria-label="Previous slide"
+              >
+                <svg className="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              
+              <button 
+                type="button"
+                className={`hero-arrow-box product-arrow-next ${activeImageIndex === product.images.length - 1 ? 'disabled' : ''}`}
+                onClick={handleNextImage}
+                aria-label="Next slide"
+              >
+                <svg className="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       )}
