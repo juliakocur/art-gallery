@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useLocation, Link } from 'react-router-dom';
+import emailjs from '@emailjs/browser';
 import './ContactForm.css';
 
 export default function ContactForm({ currentLang }) {
@@ -9,7 +10,7 @@ export default function ContactForm({ currentLang }) {
   const sectionRef = useRef(null);
 
   const [category, setCategory] = useState('clock');
-  const [size, setSize] = useState('');
+  const [size, setSize] = useState('50 cm'); // Дефолтный минимальный размер для часов теперь 50 cm
   const [color, setColor] = useState('');
   const [workName, setWorkName] = useState('');
   const [name, setName] = useState('');
@@ -17,18 +18,15 @@ export default function ContactForm({ currentLang }) {
   const [instagram, setInstagram] = useState('');
   const [message, setMessage] = useState('');
 
-  // Состояния для двух обязательных чекбоксов согласия
   const [privacyConsent, setPrivacyConsent] = useState(false);
   const [termsConsent, setTermsConsent] = useState(false);
-
-  // IP-адрес пользователя для доказательной базы
   const [clientIp, setClientIp] = useState('Nieznany / Unknown');
 
   const [errors, setErrors] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Состояния для отслеживания открытых селектов (чтобы крутить стрелочки)
   const [openSelect, setOpenSelect] = useState(null);
 
   const isPl = currentLang === 'pl';
@@ -39,7 +37,6 @@ export default function ContactForm({ currentLang }) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Получаем IP-адрес клиента при монтировании компонента
   useEffect(() => {
     fetch('https://api.ipify.org?format=json')
       .then((res) => res.json())
@@ -53,7 +50,6 @@ export default function ContactForm({ currentLang }) {
       });
   }, []);
 
-  // Заполняем данные при переходе со страницы товара
   useEffect(() => {
     if (location.state) {
       if (location.state.category) setCategory(location.state.category);
@@ -67,7 +63,6 @@ export default function ContactForm({ currentLang }) {
     }
   }, [location.state]);
 
-  // Плавная автопрокрутка прямо к форме при получении данных
   useEffect(() => {
     if (location.state && sectionRef.current) {
       setTimeout(() => {
@@ -152,7 +147,7 @@ export default function ContactForm({ currentLang }) {
     return re.test(String(emailStr).toLowerCase());
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let newErrors = {};
 
@@ -166,36 +161,49 @@ export default function ContactForm({ currentLang }) {
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
-      const submissionData = {
-        timestamp: new Date().toLocaleString('pl-PL', { timeZone: 'Europe/Warsaw' }),
-        isoDate: new Date().toISOString(),
-        ipAddress: clientIp,
+      setIsSubmitting(true);
+
+      const templateParams = {
         category,
         workName,
-        size,
-        color,
+        size: size || 'Nie wybrano / Not selected',
+        color: color || 'Nie wybrano / Not selected',
         name,
         email,
-        instagram,
+        instagram: instagram || 'Brak / None',
         message,
-        consents: {
-          privacyPolicyAccepted: privacyConsent,
-          termsAccepted: termsConsent
-        }
+        clientIp,
+        timestamp: new Date().toLocaleString('pl-PL', { timeZone: 'Europe/Warsaw' })
       };
 
-      console.log('--- DOWÓD ZGODY / SUBMISSION EVIDENCE ---', submissionData);
+      try {
+        await emailjs.send(
+          'service_oli5s5h', 
+          'template_1dp1snj', 
+          templateParams, 
+          'kSE3to3FNWUG-DWS1'
+        );
 
-      setIsClosing(false);
-      setIsModalOpen(true);
-      
-      setWorkName('');
-      setName('');
-      setEmail('');
-      setInstagram('');
-      setMessage('');
-      setPrivacyConsent(false);
-      setTermsConsent(false);
+        setIsClosing(false);
+        setIsModalOpen(true);
+        
+        // Сброс формы в исходное состояние (с минимальным размером 50 cm для часов)
+        setCategory('clock');
+        setSize('50 cm');
+        setColor('');
+        setWorkName('');
+        setName('');
+        setEmail('');
+        setInstagram('');
+        setMessage('');
+        setPrivacyConsent(false);
+        setTermsConsent(false);
+      } catch (error) {
+        console.error('Błąd wysyłania emaila:', error);
+        alert(isPl ? 'Wystąpił błąd podczas wysyłania. Spróbuj ponownie.' : 'An error occurred while sending. Please try again.');
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -259,9 +267,10 @@ export default function ContactForm({ currentLang }) {
                   setCategory(newCat);
                   setOpenSelect(null);
                   
-                  if (newCat === 'clock') setSize('60 cm');
-                  else if (newCat === 'painting') setSize('70x70 cm');
-                  else if (newCat === 'decor') setSize('50 cm');
+                  // Установка минимального размера для каждой категории
+                  if (newCat === 'clock') setSize('50 cm');
+                  else if (newCat === 'painting') setSize('50x70 cm');
+                  else if (newCat === 'decor') setSize('30 cm');
                 }}
               >
                 <option value="clock">{isPl ? 'Zegar' : 'Clock'}</option>
@@ -477,8 +486,10 @@ export default function ContactForm({ currentLang }) {
           </div>
 
           <div className="form-submit-wrapper">
-            <button type="submit" className="submit-btn">
-              {isPl ? 'Wyślij zapytanie' : 'Send inquiry'}
+            <button type="submit" className="submit-btn" disabled={isSubmitting}>
+              {isSubmitting 
+                ? (isPl ? 'Wysyłanie...' : 'Sending...') 
+                : (isPl ? 'Wyślij zapytanie' : 'Send inquiry')}
             </button>
           </div>
         </form>
