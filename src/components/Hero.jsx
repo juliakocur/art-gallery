@@ -118,7 +118,7 @@ export default function Hero({ currentLang }) {
 
             <div className="hero-controls">
               {/* Левая стрелка SVG */}
-              <button className="hero-arrow-box" onClick={prevSlide} aria-label="Previous slide">
+              <button className="hero-arrow-box-slider" onClick={prevSlide} aria-label="Previous slide">
                 <svg className="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
                 </svg>
@@ -136,7 +136,7 @@ export default function Hero({ currentLang }) {
               </div>
 
               {/* Правая стрелка SVG */}
-              <button className="hero-arrow-box" onClick={nextSlide} aria-label="Next slide">
+              <button className="hero-arrow-box-slider" onClick={nextSlide} aria-label="Next slide">
                 <svg className="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                 </svg>

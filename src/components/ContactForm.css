@@ -101,7 +101,6 @@
   -moz-appearance: none;
   appearance: none;
   
-  /* Стрелка в обычном состоянии смотрит ВНИЗ */
   background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%232C2A29' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 16px center;
@@ -127,7 +126,6 @@
   padding: 12px;
 }
 
-/* Золотая рамка при фокусе */
 .form-input:focus,
 .form-textarea:focus,
 .form-select:focus {
@@ -135,12 +133,12 @@
   box-shadow: 0 0 0 1px #C5A880;
 }
 
-/* КОГДА СПИСОК ОТКРЫТ (добавляется класс .is-open через JS): стрелочка смотрит ВВЕРХ */
 .form-select.is-open {
   border-color: #C5A880;
   box-shadow: 0 0 0 1px #C5A880;
   background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%232C2A29' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 15l-6-6-6 6'/%3E%3C/svg%3E");
 }
+
 .form-input.error,
 .form-select.error,
 .form-textarea.error {
@@ -157,6 +155,55 @@
   font-size: 12px;
   color: #c45c5c;
   margin-top: 4px;
+}
+
+/* ===== Блок чекбоксов согласия (Consents) ===== */
+.form-consents-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 24px;
+  margin-bottom: 10px;
+}
+
+.consent-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.consent-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: #4A4641;
+  line-height: 1.5;
+}
+
+.consent-checkbox {
+  margin-top: 2px;
+  width: 16px;
+  height: 16px;
+  accent-color: #C5A880;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.consent-text a {
+  color: #C5A880;
+  text-decoration: underline;
+  transition: color 0.2s ease;
+}
+
+.consent-text a:hover {
+  color: #b3956e;
+}
+
+.consent-label.error .consent-text {
+  color: #c45c5c;
 }
 
 .form-submit-wrapper {

@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import './Footer.css';
 import instagramIcon from '../assets/ig.svg';
 import tiktokIcon from '../assets/tik-tok.svg';
 import pinterestIcon from '../assets/pinterest.svg';
 
-export default function Footer({ currentLang, openModal }) {
+export default function Footer({ currentLang }) {
   const [isVisible, setIsVisible] = useState(false);
   const footerRef = useRef(null);
 
@@ -26,67 +27,54 @@ export default function Footer({ currentLang, openModal }) {
     return () => observer.disconnect();
   }, []);
 
+  const isPl = currentLang === 'pl';
+  const privacyLink = isPl ? '/pl/polityka' : '/en/privacy';
+  const termsLink = isPl ? '/pl/regulamin' : '/en/terms';
+
+  // Вспомогательная функция для скролла наверх
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
-    <footer 
-      ref={footerRef} 
-      className={`site-footer ${isVisible ? 'fade-in-active' : ''}`}
-    >
+    <footer ref={footerRef} className={`site-footer ${isVisible ? 'fade-in-active' : ''}`}>
       <div className="footer-container">
         
-        {/* Логотип */}
-        <div href="#" className="logo">
+        <div className="logo">
           <span className="logo-title">JULIA KOCUR</span>
-
           <span className="logo-subtitle">
             {"SCULPTURAL ART".split("").map((char, index) => (
-              <span
-                key={index}
-                className="char"
-              >
+              <span key={index} className="char">
                 {char === " " ? "\u00A0" : char}
               </span>
             ))}
           </span>
         </div>
 
-        {/* По центру: копирайт, политика, регулямин с точками */}
         <div className="footer-center-content">
           <span className="footer-item">&copy; {new Date().getFullYear()} Julia Kocur</span>
           
           <span className="footer-item">
-            <a 
-              href="#polityka" 
-              onClick={(e) => { 
-                e.preventDefault(); 
-                openModal('polityka'); 
-              }}
-            >
-              {currentLang === 'pl' ? 'Polityka prywatności' : 'Privacy Policy'}
-            </a>
+            <Link to={privacyLink} onClick={scrollToTop}>
+              {isPl ? 'Polityka prywatności' : 'Privacy Policy'}
+            </Link>
           </span>
 
           <span className="footer-item">
-            <a 
-              href="#regulamin" 
-              onClick={(e) => { 
-                e.preventDefault(); 
-                openModal('regulamin'); 
-              }}
-            >
-              {currentLang === 'pl' ? 'Regulamin' : 'Terms & Conditions'}
-            </a>
+            <Link to={termsLink} onClick={scrollToTop}>
+              {isPl ? 'Regulamin' : 'Terms & Conditions'}
+            </Link>
           </span>
         </div>
 
-        {/* Справа: иконки соцсетей */}
         <div className="footer-social-icons">
-          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+          <a href="https://instagram.com/juliakocur.arts" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
             <img src={instagramIcon} alt="Instagram" />
           </a>
-          <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+          <a href="https://tiktok.com/@juliakocur.arts" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
             <img src={tiktokIcon} alt="TikTok" />
           </a>
-          <a href="https://pinterest.com" target="_blank" rel="noopener noreferrer" aria-label="Pinterest">
+          <a href="https://pinterest.com/juliakocur_arts" target="_blank" rel="noopener noreferrer" aria-label="Pinterest">
             <img src={pinterestIcon} alt="Pinterest" />
           </a>
         </div>

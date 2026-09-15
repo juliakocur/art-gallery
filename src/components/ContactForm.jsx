@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import './ContactForm.css';
 
 export default function ContactForm({ currentLang }) {
@@ -17,6 +17,13 @@ export default function ContactForm({ currentLang }) {
   const [instagram, setInstagram] = useState('');
   const [message, setMessage] = useState('');
 
+  // Состояния для двух обязательных чекбоксов согласия
+  const [privacyConsent, setPrivacyConsent] = useState(false);
+  const [termsConsent, setTermsConsent] = useState(false);
+
+  // IP-адрес пользователя для доказательной базы
+  const [clientIp, setClientIp] = useState('Nieznany / Unknown');
+
   const [errors, setErrors] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
@@ -24,17 +31,37 @@ export default function ContactForm({ currentLang }) {
   // Состояния для отслеживания открытых селектов (чтобы крутить стрелочки)
   const [openSelect, setOpenSelect] = useState(null);
 
+  const isPl = currentLang === 'pl';
+  const privacyLink = isPl ? '/pl/polityka' : '/en/privacy';
+  const termsLink = isPl ? '/pl/regulamin' : '/en/terms';
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Получаем IP-адрес клиента при монтировании компонента
+  useEffect(() => {
+    fetch('https://api.ipify.org?format=json')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && data.ip) {
+          setClientIp(data.ip);
+        }
+      })
+      .catch((err) => {
+        console.error('Nie udało się pobrać IP:', err);
+      });
+  }, []);
+
   // Заполняем данные при переходе со страницы товара
   useEffect(() => {
     if (location.state) {
       if (location.state.category) setCategory(location.state.category);
       if (location.state.workName) setWorkName(location.state.workName);
       
-      // Читаем размер из любого возможного ключа
       const incomingSize = location.state.size || location.state.wymiar;
       if (incomingSize) setSize(incomingSize);
 
-      // Читаем цвет/отделку из любого возможного ключа
       const incomingColor = location.state.color || location.state.finish;
       if (incomingColor) setColor(incomingColor);
     }
@@ -65,7 +92,7 @@ export default function ContactForm({ currentLang }) {
     }
 
     return () => observer.disconnect();
-  }, [], );
+  }, []);
 
   useEffect(() => {
     if (isModalOpen) {
@@ -96,29 +123,28 @@ export default function ContactForm({ currentLang }) {
       { value: '80 cm', label: '80 cm' },
       { value: '90 cm', label: '90 cm' },
       { value: '100 cm', label: '100 cm' },
-      { value: 'inny', label: currentLang === 'pl' ? 'Inny rozmiar' : 'Other size' }
+      { value: 'inny', label: isPl ? 'Inny rozmiar' : 'Other size' }
     ],
     painting: [
       { value: '50x70 cm', label: '50x70 cm' },
       { value: '70x70 cm', label: '70x70 cm' },
       { value: '70x100 cm', label: '70x100 cm' },
       { value: '100x100 cm', label: '100x100 cm' },
-      { value: 'inny', label: currentLang === 'pl' ? 'Inny rozmiar' : 'Other size' }
+      { value: 'inny', label: isPl ? 'Inny rozmiar' : 'Other size' }
     ],
     decor: [
       { value: '30 cm', label: '30 cm' },
       { value: '50 cm', label: '50 cm' },
       { value: '70 cm', label: '70 cm' },
-      { value: 'inny', label: currentLang === 'pl' ? 'Inny rozmiar' : 'Other size' }
+      { value: 'inny', label: isPl ? 'Inny rozmiar' : 'Other size' }
     ]
   };
 
-  // Варианты отделки со стабильными ключами (value) и языковыми подписями (label)
   const finishOptions = [
-    { value: 'gold', label: currentLang === 'pl' ? 'Złoto' : 'Gold' },
-    { value: 'silver', label: currentLang === 'pl' ? 'Srebro' : 'Silver' },
-    { value: 'red', label: currentLang === 'pl' ? 'Czerwień' : 'Red' },
-    { value: 'none', label: currentLang === 'pl' ? 'Bez wykończenia' : 'No finish' }
+    { value: 'gold', label: isPl ? 'Złoto' : 'Gold' },
+    { value: 'silver', label: isPl ? 'Srebro' : 'Silver' },
+    { value: 'red', label: isPl ? 'Czerwień' : 'Red' },
+    { value: 'none', label: isPl ? 'Bez wykończenia' : 'No finish' }
   ];
 
   const validateEmail = (emailStr) => {
@@ -134,17 +160,42 @@ export default function ContactForm({ currentLang }) {
     if (!name.trim()) newErrors.name = true;
     if (!email.trim() || !validateEmail(email)) newErrors.email = true;
     if (!message.trim()) newErrors.message = true;
+    if (!privacyConsent) newErrors.privacyConsent = true;
+    if (!termsConsent) newErrors.termsConsent = true;
 
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
+      const submissionData = {
+        timestamp: new Date().toLocaleString('pl-PL', { timeZone: 'Europe/Warsaw' }),
+        isoDate: new Date().toISOString(),
+        ipAddress: clientIp,
+        category,
+        workName,
+        size,
+        color,
+        name,
+        email,
+        instagram,
+        message,
+        consents: {
+          privacyPolicyAccepted: privacyConsent,
+          termsAccepted: termsConsent
+        }
+      };
+
+      console.log('--- DOWÓD ZGODY / SUBMISSION EVIDENCE ---', submissionData);
+
       setIsClosing(false);
       setIsModalOpen(true);
+      
       setWorkName('');
       setName('');
       setEmail('');
       setInstagram('');
       setMessage('');
+      setPrivacyConsent(false);
+      setTermsConsent(false);
     }
   };
 
@@ -161,15 +212,15 @@ export default function ContactForm({ currentLang }) {
         <div className={`modal-overlay ${isClosing ? 'closing' : 'active'}`} onClick={closeModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <h3 className="modal-title">
-              {currentLang === 'pl' ? 'Dziękujemy!' : 'Thank You!'}
+              {isPl ? 'Dziękujemy!' : 'Thank You!'}
             </h3>
             <p className="modal-text">
-              {currentLang === 'pl'
+              {isPl
                 ? 'Twoje zapytanie zostało wysłane pomyślnie. Wkrótce się z Tobą skontaktuję.'
                 : 'Your inquiry has been successfully sent. I will get in touch with you shortly.'}
             </p>
             <button className="modal-close-btn" onClick={closeModal}>
-              {currentLang === 'pl' ? 'Zamknij' : 'Close'}
+              {isPl ? 'Zamknij' : 'Close'}
             </button>
           </div>
         </div>,
@@ -187,17 +238,16 @@ export default function ContactForm({ currentLang }) {
         <div className="section-header-line">
           <span className="line left-line"></span>
           <h2 className="section-title">
-            {currentLang === 'pl' ? 'Zapytaj o cenę' : 'Ask for price'}
+            {isPl ? 'Zapytaj o cenę' : 'Ask for price'}
           </h2>
           <span className="line right-line"></span>
         </div>
 
         <form className="contact-form" onSubmit={handleSubmit} noValidate>
           <div className="form-row">
-            {/* Поле 1: Категория */}
             <div className="form-group">
               <label className="form-label">
-                {currentLang === 'pl' ? 'Co Cię interesuje?' : 'What are you interested in?'}
+                {isPl ? 'Co Cię interesuje?' : 'What are you interested in?'}
               </label>
               <select
                 className={`form-select ${openSelect === 'category' ? 'is-open' : ''}`}
@@ -209,27 +259,25 @@ export default function ContactForm({ currentLang }) {
                   setCategory(newCat);
                   setOpenSelect(null);
                   
-                  // Устанавливаем дефолтный размер только при ручной смене категории пользователем
                   if (newCat === 'clock') setSize('60 cm');
                   else if (newCat === 'painting') setSize('70x70 cm');
                   else if (newCat === 'decor') setSize('50 cm');
                 }}
               >
-                <option value="clock">{currentLang === 'pl' ? 'Zegar' : 'Clock'}</option>
-                <option value="painting">{currentLang === 'pl' ? 'Obraz' : 'Painting'}</option>
-                <option value="decor">{currentLang === 'pl' ? 'Dekoracja' : 'Decorative Object'}</option>
+                <option value="clock">{isPl ? 'Zegar' : 'Clock'}</option>
+                <option value="painting">{isPl ? 'Obraz' : 'Painting'}</option>
+                <option value="decor">{isPl ? 'Dekoracja' : 'Decorative Object'}</option>
               </select>
             </div>
 
-            {/* Поле 2: Название работы */}
             <div className="form-group">
               <label className="form-label">
-                {currentLang === 'pl' ? 'Nazwa pracy' : 'Artwork name'}
+                {isPl ? 'Nazwa pracy' : 'Artwork name'}
               </label>
               <input
                 type="text"
                 className={`form-input ${errors.workName ? 'error' : ''}`}
-                placeholder={currentLang === 'pl' ? 'np. Zegar Granaty' : 'e.g. Clock Pomegranates'}
+                placeholder={isPl ? 'np. Zegar Granaty' : 'e.g. Clock Pomegranates'}
                 value={workName}
                 onChange={(e) => {
                   setWorkName(e.target.value);
@@ -238,15 +286,14 @@ export default function ContactForm({ currentLang }) {
               />
               {errors.workName && (
                 <span className="error-text">
-                  {currentLang === 'pl' ? 'Proszę wpisać nazwę pracy' : 'Please enter artwork name'}
+                  {isPl ? 'Proszę wpisać nazwę pracy' : 'Please enter artwork name'}
                 </span>
               )}
             </div>
 
-            {/* Поле 3: Размер */}
             <div className="form-group">
               <label className="form-label">
-                {currentLang === 'pl' ? 'Wybrany rozmiar' : 'Selected size'}
+                {isPl ? 'Wybrany rozmiar' : 'Selected size'}
               </label>
               <select
                 className={`form-select ${openSelect === 'size' ? 'is-open' : ''}`}
@@ -266,10 +313,9 @@ export default function ContactForm({ currentLang }) {
               </select>
             </div>
 
-            {/* Поле 4: Цвет / отделка */}
             <div className="form-group">
               <label className="form-label">
-                {currentLang === 'pl' ? 'Kolor / Wykończenie' : 'Color / Finish'}
+                {isPl ? 'Kolor / Wykończenie' : 'Color / Finish'}
               </label>
               <select
                 className={`form-select ${openSelect === 'color' ? 'is-open' : ''}`}
@@ -282,7 +328,7 @@ export default function ContactForm({ currentLang }) {
                 }}
               >
                 <option value="" disabled>
-                  {currentLang === 'pl' ? 'Wybierz wykończenie' : 'Select finish'}
+                  {isPl ? 'Wybierz wykończenie' : 'Select finish'}
                 </option>
                 {finishOptions.map((opt) => (
                   <option key={opt.value} value={opt.value}>
@@ -296,12 +342,12 @@ export default function ContactForm({ currentLang }) {
           <div className="form-row">
             <div className="form-group">
               <label className="form-label">
-                {currentLang === 'pl' ? 'Twoje imię' : 'Your name'}
+                {isPl ? 'Twoje imię' : 'Your name'}
               </label>
               <input
                 type="text"
                 className={`form-input ${errors.name ? 'error' : ''}`}
-                placeholder={currentLang === 'pl' ? 'Imię' : 'Name'}
+                placeholder={isPl ? 'Imię' : 'Name'}
                 value={name}
                 onChange={(e) => {
                   setName(e.target.value);
@@ -310,7 +356,7 @@ export default function ContactForm({ currentLang }) {
               />
               {errors.name && (
                 <span className="error-text">
-                  {currentLang === 'pl' ? 'Proszę wpisać imię' : 'Please enter your name'}
+                  {isPl ? 'Proszę wpisać imię' : 'Please enter your name'}
                 </span>
               )}
             </div>
@@ -329,14 +375,14 @@ export default function ContactForm({ currentLang }) {
               />
               {errors.email && (
                 <span className="error-text">
-                  {currentLang === 'pl' ? 'Wprowadź poprawny adres e-mail' : 'Please enter a valid email'}
+                  {isPl ? 'Wprowadź poprawny adres e-mail' : 'Please enter a valid email'}
                 </span>
               )}
             </div>
 
             <div className="form-group">
               <label className="form-label">
-                {currentLang === 'pl' ? 'Instagram (opcjonalnie)' : 'Instagram (optional)'}
+                {isPl ? 'Instagram (opcjonalnie)' : 'Instagram (optional)'}
               </label>
               <input
                 type="text"
@@ -350,7 +396,7 @@ export default function ContactForm({ currentLang }) {
 
           <div className="form-group full-width">
             <label className="form-label">
-              {currentLang === 'pl' ? 'Opowiedz mi o swoim projekcie...' : 'Tell me about your project...'}
+              {isPl ? 'Opowiedz mi o swoim projekcie...' : 'Tell me about your project...'}
             </label>
             <textarea
               className={`form-textarea ${errors.message ? 'error' : ''}`}
@@ -363,14 +409,76 @@ export default function ContactForm({ currentLang }) {
             ></textarea>
             {errors.message && (
               <span className="error-text">
-                {currentLang === 'pl' ? 'Proszę opisać swój projekt' : 'Please describe your project'}
+                {isPl ? 'Proszę opisać swój projekt' : 'Please describe your project'}
               </span>
             )}
           </div>
 
+          <div className="form-consents-wrapper">
+            <div className="consent-item">
+              <label className="consent-label">
+                <input
+                  type="checkbox"
+                  className="consent-checkbox"
+                  checked={privacyConsent}
+                  onChange={(e) => {
+                    setPrivacyConsent(e.target.checked);
+                    if (errors.privacyConsent) setErrors({ ...errors, privacyConsent: false });
+                  }}
+                />
+                <span className="consent-text">
+                  {isPl ? (
+                    <>
+                      Oświadczam, że zapoznałam/em się z <Link to={privacyLink} onClick={scrollToTop}>Polityką Prywatności</Link>.
+                    </>
+                  ) : (
+                    <>
+                      I declare that I have read the <Link to={privacyLink} onClick={scrollToTop}>Privacy Policy</Link>.
+                    </>
+                  )}
+                </span>
+              </label>
+              {errors.privacyConsent && (
+                <span className="error-text">
+                  {isPl ? 'Musisz zaakceptować Politykę Prywatności' : 'You must accept the Privacy Policy'}
+                </span>
+              )}
+            </div>
+
+            <div className="consent-item">
+              <label className="consent-label">
+                <input
+                  type="checkbox"
+                  className="consent-checkbox"
+                  checked={termsConsent}
+                  onChange={(e) => {
+                    setTermsConsent(e.target.checked);
+                    if (errors.termsConsent) setErrors({ ...errors, termsConsent: false });
+                  }}
+                />
+                <span className="consent-text">
+                  {isPl ? (
+                    <>
+                      Oświadczam, że zapoznałam/em się z <Link to={termsLink} onClick={scrollToTop}>Regulaminem</Link>.
+                    </>
+                  ) : (
+                    <>
+                      I declare that I have read the <Link to={termsLink} onClick={scrollToTop}>Terms</Link>.
+                    </>
+                  )}
+                </span>
+              </label>
+              {errors.termsConsent && (
+                <span className="error-text">
+                  {isPl ? 'Musisz zaakceptować Regulamin' : 'You must accept the Terms'}
+                </span>
+              )}
+            </div>
+          </div>
+
           <div className="form-submit-wrapper">
             <button type="submit" className="submit-btn">
-              {currentLang === 'pl' ? 'Wyślij zapytanie' : 'Send inquiry'}
+              {isPl ? 'Wyślij zapytanie' : 'Send inquiry'}
             </button>
           </div>
         </form>

@@ -1,0 +1,117 @@
+.legal-page-container {
+    background-color: #F7F5F0;
+    color: #2C2A29;
+    padding: 120px 20px 80px 20px;
+    min-height: 100vh;
+    box-sizing: border-box;
+  }
+  
+  .legal-page-inner {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .legal-page-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px;
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+    color: #2C2A29;
+  }
+  
+  .legal-subtitle-info {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    text-align: center;
+    color: #6E6863;
+    margin-bottom: 40px;
+  }
+  
+  .legal-document-content h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: #C5A880;
+    margin-top: 32px;
+    margin-bottom: 12px;
+  }
+  
+  .legal-document-content p,
+  .legal-document-content li {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    line-height: 1.7;
+    color: #6E6863;
+    margin-bottom: 12px;
+  }
+  
+  .legal-document-content ul {
+    padding-left: 20px;
+    margin-bottom: 12px;
+  }
+  
+  .legal-back-wrapper {
+    margin-top: 50px;
+    text-align: center;
+    border-top: 1px solid #D6D0C5;
+    padding-top: 30px;
+  }
+  
+  .legal-back-btn {
+    display: inline-block;
+    background-color: #C5A880;
+    color: #F4F1EA;
+    padding: 12px 28px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .legal-back-btn:hover {
+    background-color: #b3956e;
+  }
+  
+  /* --- АДАПТИВ ДЛЯ МОБИЛЬНЫХ УСТРОЙСТВ --- */
+  @media (max-width: 768px) {
+    .legal-page-container {
+      padding: 100px 16px 60px 16px;
+    }
+  
+    .legal-page-title {
+      font-size: 26px;
+    }
+  
+    .legal-subtitle-info {
+      font-size: 12px;
+      margin-bottom: 30px;
+    }
+  
+    .legal-document-content h2 {
+      font-size: 18px;
+      margin-top: 24px;
+    }
+  
+    .legal-document-content p,
+    .legal-document-content li {
+      font-size: 13px;
+      line-height: 1.6;
+    }
+  
+    .legal-back-wrapper {
+      margin-top: 35px;
+      padding-top: 20px;
+    }
+  
+    .legal-back-btn {
+      width: 100%;
+      box-sizing: border-box;
+      text-align: center;
+      padding: 14px 20px;
+    }
+  }

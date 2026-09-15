@@ -1,7 +1,10 @@
 import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import './LegalModals.css';
 
 export default function LegalModals({ activeModal, onClose, currentLang }) {
+
+
   // Жесткая блокировка скролла страницы
   useEffect(() => {
     if (activeModal) {
@@ -27,6 +30,7 @@ export default function LegalModals({ activeModal, onClose, currentLang }) {
   if (!activeModal) return null;
 
   const isPl = currentLang === 'pl';
+  const privacyPath = isPl ? '/pl/polityka' : '/en/privacy';
 
   return (
     <div className={`legal-modal-overlay ${activeModal ? 'active' : ''}`} onClick={onClose}>
@@ -36,6 +40,38 @@ export default function LegalModals({ activeModal, onClose, currentLang }) {
           &times;
         </button>
 
+        {/* --- МОДАЛКА КУК / ПРИВАТНОСТИ --- */}
+        {activeModal === 'cookie' && (
+          <div className="cookie-modal-inner">
+            <span className="cookie-modal-title">
+              {isPl ? 'Prywatność' : 'Privacy'}
+            </span>
+            <p className="cookie-modal-text">
+              {isPl ? (
+                <>
+                  Ta strona wykorzystuje niezbędne pliki cookies oraz dane techniczne potrzebne do jej prawidłowego działania. Szczegółowe informacje znajdziesz w{' '}
+                  <Link to={privacyPath} className="cookie-modal-link" onClick={onClose}>
+                    Polityce Prywatności
+                  </Link>.
+                </>
+              ) : (
+                <>
+                  This website uses necessary cookies and technical data required for its proper operation. More information can be found in the{' '}
+                  <Link to={privacyPath} className="cookie-modal-link" onClick={onClose}>
+                    Privacy Policy
+                  </Link>.
+                </>
+              )}
+            </p>
+            <div className="cookie-modal-buttons">
+              <button className="cookie-modal-btn-primary" onClick={onClose}>
+                {isPl ? 'Rozumiem' : 'Got it'}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* --- ПОЛИТИКА --- */}
         {activeModal === 'polityka' && (
           <div className="legal-scroll-box">
             <h2 className="legal-modal-title">
@@ -74,6 +110,7 @@ export default function LegalModals({ activeModal, onClose, currentLang }) {
           </div>
         )}
 
+        {/* --- РЕГУЛАМИН --- */}
         {activeModal === 'regulamin' && (
           <div className="legal-scroll-box">
             <h2 className="legal-modal-title">
@@ -105,11 +142,13 @@ export default function LegalModals({ activeModal, onClose, currentLang }) {
           </div>
         )}
 
-        <div className="legal-btn-wrapper">
-          <button className="legal-modal-close-btn" onClick={onClose}>
-            {isPl ? 'Zamknij' : 'Close'}
-          </button>
-        </div>
+        {activeModal !== 'cookie' && (
+          <div className="legal-btn-wrapper">
+            <button className="legal-modal-close-btn" onClick={onClose}>
+              {isPl ? 'Zamknij' : 'Close'}
+            </button>
+          </div>
+        )}
 
       </div>
     </div>

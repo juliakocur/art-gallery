@@ -17,10 +17,19 @@ export default function CollectionPage({ currentLang }) {
 
   const currentId = category ? pathToId[category] || 'all' : 'all';
   const [activeTab, setActiveTab] = useState(currentId);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const sectionRef = useRef(null);
 
   useEffect(() => {
-    setActiveTab(category ? pathToId[category] || 'all' : 'all');
+    const targetTab = category ? pathToId[category] || 'all' : 'all';
+    if (targetTab !== activeTab) {
+      setIsTransitioning(true);
+      const timer = setTimeout(() => {
+        setActiveTab(targetTab);
+        setIsTransitioning(false);
+      }, 250); // Время совпадает с полупрозрачностью в CSS
+      return () => clearTimeout(timer);
+    }
     window.scrollTo(0, 0); 
   }, [category]);
 
@@ -137,26 +146,34 @@ export default function CollectionPage({ currentLang }) {
     : allProducts.filter(item => item.category === activeTab);
 
   const handleTabClick = (tabId) => {
-    setActiveTab(tabId);
+    if (tabId === activeTab) return;
+    
+    setIsTransitioning(true);
     window.scrollTo({ top: 0, behavior: 'smooth' }); 
-    if (tabId === 'all') {
-      navigate(`/${currentLang}/kolekcja`);
-    } else {
-      const slugMap = {
-        clocks: { pl: 'zegary', en: 'clocks' },
-        paintings: { pl: 'obrazy', en: 'paintings' },
-        decor: { pl: 'dekoracje', en: 'decor' }
-      };
-      const slug = slugMap[tabId][currentLang];
-      navigate(`/${currentLang}/kolekcja/${slug}`);
-    }
+
+    setTimeout(() => {
+      setActiveTab(tabId);
+      setIsTransitioning(false);
+      
+      if (tabId === 'all') {
+        navigate(`/${currentLang}/kolekcja`);
+      } else {
+        const slugMap = {
+          clocks: { pl: 'zegary', en: 'clocks' },
+          paintings: { pl: 'obrazy', en: 'paintings' },
+          decor: { pl: 'dekoracje', en: 'decor' }
+        };
+        const slug = slugMap[tabId][currentLang];
+        navigate(`/${currentLang}/kolekcja/${slug}`);
+      }
+    }, 250);
   };
 
   return (
     <div className="collection-page" ref={sectionRef}>
       
       {/* Верхний баннер */}
-      <div className="collection-hero-banner" key={activeTab}>
+      <div className="collection-hero-banner">
         <div 
           className="collection-hero-bg" 
           style={{ backgroundImage: `url(${currentBanner.image})` }}
@@ -205,15 +222,15 @@ export default function CollectionPage({ currentLang }) {
         </div>
       </div>
 
-      {/* Сетка товаров */}
-      <div className="collection-products-container">
+      {/* Сетка товаров с плавным затуханием/появлением */}
+      <div className={`collection-products-container ${isTransitioning ? 'fade-out' : 'fade-in'}`}>
         {filteredProducts.length > 0 ? (
           <div className="collection-products-grid">
             {filteredProducts.map((product, index) => (
               <div 
                 className="product-card" 
                 key={product.id}
-                style={{ transitionDelay: `${index * 0.15}s` }}
+                style={{ transitionDelay: `${index * 0.1}s` }}
                 onClick={() => {
                   window.scrollTo(0, 0);
                   navigate(`/${currentLang}/produkt/${product.id}`);
